@@ -21,6 +21,12 @@ namespace VSharp
 			
 			Lexer() = default;
 
+			~Lexer()
+			{
+				delete Source;
+				delete GetFullTokenText();
+			}
+
 		public:
 			const Char8* Source;
 			[[nodiscard]] Char8 Current() const { return Peek(0); }

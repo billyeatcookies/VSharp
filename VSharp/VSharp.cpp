@@ -11,14 +11,14 @@ Int32 ExecuteFile(const char* filepath);
 
 int main(int argc, char* argv[]) noexcept
 {
-	if (argc == 0)
+	return ExecuteRepl();
+	/*if (argc == 0)
 	{
-		return ExecuteRepl();
 	}
 	if (argc == 1)
 	{
 		return ExecuteFile(argv[0]);
-	}
+	}*/
 }
 
 void ExecuteCommand(const std::string& command)

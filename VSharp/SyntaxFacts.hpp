@@ -84,6 +84,7 @@ namespace VSharp
 
 		// ect for now
 		IdentifierToken,
+
 		NumericLiteralToken,
 		StringLiteralToken,
 		CharLiteralToken,
@@ -210,11 +211,31 @@ namespace VSharp
 				return "false";
 			case SyntaxKind::NilKeyword:
 				return "nil";
-			default:
-				return "";
-		}
-	}
 
+			case SyntaxKind::BadToken: 
+				return "BadToken";
+			case SyntaxKind::EndOfFileToken: 
+				return "EndOfFileToken";
+			case SyntaxKind::WhiteSpaceToken: 
+				return "WhiteSpaceToken";
+			case SyntaxKind::NewLineToken: 
+				return "NewLineToken";
+			case SyntaxKind::SingleLineCommentToken: 
+				return "SingleLineCommentToken";
+			case SyntaxKind::MultiLineToken: 
+				return "MultiLineToken";
+			case SyntaxKind::IdentifierToken: 
+				return "IdentifierToken";
+			case SyntaxKind::NumericLiteralToken: 
+				return "NumericLiteralToken";
+			case SyntaxKind::StringLiteralToken: 
+				return "StringLiteralToken";
+			case SyntaxKind::CharLiteralToken: 
+				return "CharLiteralToken";
+		}
+
+	}
+	
 	static std::unordered_map<SyntaxKind, const char*> MemberNames
 	{
 		{SyntaxKind::BadToken, "BadToken"},

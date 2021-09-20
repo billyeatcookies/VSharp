@@ -9,7 +9,7 @@ namespace VSharp
 	std::vector<SyntaxToken> Lexer::CollectTokens(const Char8* source)
 	{
 		Lexer lexer(source);
-		std::vector<SyntaxToken> tokens;
+		std::vector<SyntaxToken> tokens{};
 		SyntaxToken token{};
 
 		do
@@ -24,6 +24,7 @@ namespace VSharp
 		return tokens;
 	}
 
+	// 12.12 + 12.12
 	SyntaxToken Lexer::ScanSyntaxToken()
 	{
 		_start = _position;
@@ -222,7 +223,7 @@ namespace VSharp
 						Advance();
 						break;
 					case '&':
-						_kind = SyntaxKind::AmpersandEqualsToken;
+						_kind = SyntaxKind::AmpersandAmpersandToken;
 						Advance();
 						break;
 					default:
@@ -233,6 +234,7 @@ namespace VSharp
 			case '"':
 			case '\'':
 				ScanStringOrCharLiteral();
+				break;
 			default:
 				if (IsWhiteSpace(Current()))
 				{
@@ -247,11 +249,8 @@ namespace VSharp
 				{
 					ScanIdentifierOrKeyword();
 				}
-				else
-				{
-					std::cout << Current();
-					Advance();
-				}
+				std::cout << Current();
+				Advance();
 				break;
 		}
 
@@ -288,6 +287,7 @@ namespace VSharp
 		}
 	}
 
+	// TODO: Fully support floats, and assign correct types
 	void Lexer::ScanNumericLiteral()
 	{
 		while (IsDigit(Current()))
@@ -305,12 +305,11 @@ namespace VSharp
 		}
 
 		const Char8* text = GetFullTokenText();
-		Float64 value = atof(text);
-		_value = &value;
-
+		_value = atof(text);
 		_kind = SyntaxKind::NumericLiteralToken;
 	}
 
+	// TODO: Support escapes
 	void Lexer::ScanStringOrCharLiteral()
 	{
 		const char quoteChar = Current();
@@ -382,7 +381,6 @@ namespace VSharp
 
 		const UInt64 length = _position - _start;
 		const Char8* text = Substring(Source, _start, length);
-
 		// Will either be a reserved keyword or IdentifierToken for user defined tokens
 		_kind = LookupKeyword(text);
 	}

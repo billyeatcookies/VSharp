@@ -1,4 +1,5 @@
 #pragma once
+
 namespace VSharp
 {
 	using Int8 = signed char;
