@@ -305,8 +305,8 @@ namespace VSharp
 		}
 
 		const Char8* text = GetFullTokenText();
-		_value = atof(text);
-		_kind = SyntaxKind::NumericLiteralToken;
+		_value = atof(text); // this parses to double
+		_kind = SyntaxKind::Float64LiteralToken;
 	}
 
 	// TODO: Support escapes

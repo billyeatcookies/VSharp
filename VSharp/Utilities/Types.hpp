@@ -1,6 +1,8 @@
 #pragma once
 
-namespace VSharp
+// I hate the fact that the built in types are defined with stupid aliases,
+// so I've created typedefs for brevity and clarity sake when working.
+namespace VSharp::Types
 {
 	using Int8 = signed char;
 	using UInt8 = unsigned char;

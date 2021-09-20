@@ -1,113 +1,22 @@
 #pragma once
 #include <unordered_map>
 
-#include "Types.hpp"
+#include "..\Utilities\Types.hpp"
+#include "SyntaxKind.hpp"
 
-namespace VSharp
+namespace VSharp::Syntax
 {
-	enum class SyntaxKind
-	{
-		BadToken,
-		EndOfFileToken,
-		WhiteSpaceToken,
-		NewLineToken,
-		SingleLineCommentToken,
-		MultiLineToken,
-
-		OpenParenToken,
-		CloseParenToken,
-		OpenBraceToken,
-		CloseBraceToken,
-		OpenBracketToken,
-		CloseBracketToken,
-
-		// Unary
-		// these are also unary in single + or - form
-		BangToken,
-		PlusPlusToken,
-		MinusMinusToken,
-
-		// Binary operators
-		PlusToken,
-		MinusToken,
-		AsteriskToken,
-		FSlashToken,
-		PercentToken,
-		QuestionMarkToken,
-
-		// Compound assignment
-		PlusEqualsToken,
-		MinusEqualsToken,
-		AsteriskEqualsToken,
-		FSlashEqualsToken,
-		PercentEqualsToken,
-		PipeEqualsToken,
-		AmpersandEqualsToken,
-
-		BangEqualsToken,
-		EqualsToken,
-		EqualsEqualsToken,
-		LessToken,
-		LessEqualsToken,
-		GreaterToken,
-		GreaterEqualsToken,
-		PipeToken,
-		PipePipeToken,
-		AmpersandToken,
-		AmpersandAmpersandToken,
-
-		// Shifts
-		LessLessToken,
-		GreaterGreaterToken,
-
-		// Delimiters
-		DotToken,
-		CommaToken,
-		ColonToken,
-		SemicolonToken,
-
-		// Type keywords
-		NilKeyword,
-		TrueKeyword,
-		FalseKeyword,
-		StringKeyword,
-		CharKeyword,
-		BoolKeyword,
-		Int8Keyword,
-		UInt8Keyword,
-		Int16Keyword,
-		UInt16Keyword,
-		Int32Keyword,
-		UInt32Keyword,
-		Int64Keyword,
-		UInt64Keyword,
-		Float32Keyword,
-		Float64Keyword,
-
-		IdentifierToken,
-
-		// Literal values
-		// Lexing is the only time we have the easiest access to the literals true type,
-		// assigning it to a true literal token will allow us to any_cast<T> the type to
-		// the proper .NET type for binding/compilation. Switching enums is also cheaper
-		// than type validation :)
-		StringLiteralToken,
-		CharLiteralToken,
-		BoolLiteralToken,
-		Int8LiteralToken,
-		UInt8LiteralToken,
-		Int16LiteralToken,
-		UInt16LiteralToken,
-		Int32LiteralToken,
-		UInt32LiteralToken,
-		Int64LiteralToken,
-		UInt64LiteralToken,
-		Float32LiteralToken,
-		Float64LiteralToken,
-	};
+	[[nodiscard]] static const Utilities::Char8* LookupMemberName(const SyntaxKind kind);
+	[[nodiscard]] static SyntaxKind LookupKeyword(const char* input);
 
 	[[nodiscard]] static const char* GetText(const SyntaxKind kind)
 	{
+		// TODO: I'm not sure if I want this to also be an unordered_map yet since it's also sharing reserved keywords 
+		
+		// DO NOT handle a token that doesn't represent a set of text on it's own,
+		// ex: IdentifierToken, BadToken, Float32Literal -- these tokens are used to
+		// compliment the fully constructed token and provide extra info. By keeping cases
+		// as short as possible we can keep this file size as small as possible... hopefully
 		switch (kind)
 		{
 			case SyntaxKind::ColonToken:
@@ -138,6 +47,8 @@ namespace VSharp
 				return "--";
 			case SyntaxKind::BangToken:
 				return "!";
+			case SyntaxKind::TildeToken:
+				return "~";
 
 				// Binary operators
 			case SyntaxKind::PlusToken:
@@ -150,6 +61,8 @@ namespace VSharp
 				return "/";
 			case SyntaxKind::PercentToken:
 				return "%";
+			case SyntaxKind::CaretToken:
+				return "^";
 
 				// Conditional operators
 			case SyntaxKind::BangEqualsToken:
@@ -198,6 +111,26 @@ namespace VSharp
 				return "&=";
 			case SyntaxKind::PipeEqualsToken:
 				return "|=";
+			case SyntaxKind::LessLessEqualsToken:
+				return "<<=";
+			case SyntaxKind::GreaterGreaterEqualsToken:
+				return ">>=";
+			case SyntaxKind::CaretEqualsToken:
+				return "^=";
+
+			// Compiler reserved keywords
+			case SyntaxKind::TypeOfKeyword:
+				return "typeof";
+			case SyntaxKind::NameOfKeyword:
+				return "nameof";
+			case SyntaxKind::SizeOfKeyword:
+				return "sizeof";
+			case SyntaxKind::NewKeyword:
+				return "new";
+			case SyntaxKind::ClassKeyword:
+				return "class";
+			case SyntaxKind::StructKeyword:
+				return "struct";
 
 			case SyntaxKind::Int8Keyword:
 				return "int8";
@@ -215,43 +148,72 @@ namespace VSharp
 				return "int64";
 			case SyntaxKind::UInt64Keyword:
 				return "uint64";
+
 			case SyntaxKind::StringKeyword:
 				return "string";
 			case SyntaxKind::CharKeyword:
 				return "char";
 			case SyntaxKind::BoolKeyword:
 				return "bool";
+
 			case SyntaxKind::TrueKeyword:
 				return "true";
 			case SyntaxKind::FalseKeyword:
 				return "false";
+
 			case SyntaxKind::NilKeyword:
 				return "nil";
 
-			case SyntaxKind::BadToken: 
-				return "BadToken";
-			case SyntaxKind::EndOfFileToken: 
-				return "EndOfFileToken";
-			case SyntaxKind::WhiteSpaceToken: 
-				return "WhiteSpaceToken";
-			case SyntaxKind::NewLineToken: 
-				return "NewLineToken";
-			case SyntaxKind::SingleLineCommentToken: 
-				return "SingleLineCommentToken";
-			case SyntaxKind::MultiLineToken: 
-				return "MultiLineToken";
-			case SyntaxKind::IdentifierToken: 
-				return "IdentifierToken";
-			case SyntaxKind::NumericLiteralToken: 
-				return "NumericLiteralToken";
-			case SyntaxKind::StringLiteralToken: 
-				return "StringLiteralToken";
-			case SyntaxKind::CharLiteralToken: 
-				return "CharLiteralToken";
+			// If the switch reaches default, that means we either have an invalid token, or a keyword 
+			default:
+				return LookupMemberName(kind);
+		}
+	}
+
+	// All compiler reserved keywords
+	static std::unordered_map<const char*, SyntaxKind> Keywords
+	{
+		{"typeof", SyntaxKind::TypeOfKeyword},
+		{"nameof", SyntaxKind::NameOfKeyword},
+		{"sizeof", SyntaxKind::SizeOfKeyword},
+		{"new", SyntaxKind::NewKeyword},
+
+		{"int8", SyntaxKind::Int8Keyword},
+		{"uint8", SyntaxKind::UInt8Keyword},
+		{"int16", SyntaxKind::Int16Keyword},
+		{"uint16", SyntaxKind::UInt16Keyword},
+		{"int32", SyntaxKind::Int32Keyword},
+		{"uint32", SyntaxKind::UInt32Keyword},
+		{"int64", SyntaxKind::Int64Keyword},
+		{"uint64", SyntaxKind::UInt64Keyword},
+
+		{"string", SyntaxKind::StringKeyword},
+		{"char", SyntaxKind::CharKeyword},
+		{"bool", SyntaxKind::BoolKeyword},
+		{"true", SyntaxKind::TrueKeyword},
+
+		{"false", SyntaxKind::FalseKeyword},
+
+		{"nil", SyntaxKind::NilKeyword},
+
+		{"class", SyntaxKind::StructKeyword},
+		{"struct", SyntaxKind::StructKeyword},
+	};
+
+	// This should be self explanatory
+	[[nodiscard]] static SyntaxKind LookupKeyword(const char* input)
+	{
+		if (Keywords.find(input) == Keywords.end())
+		{
+			return SyntaxKind::IdentifierToken;
 		}
 
+		return Keywords[input];
 	}
 	
+	// Since C++ doesn't have the ability to use reflection to get member data off enums such as their name
+	// we map them to a dictionary to easily retrieve. This isn't used very often in the compiler itself,
+	// but it's very nice to have this exposed as an outward facing API to access the names of a SyntaxKind (if ever needed)
 	static std::unordered_map<SyntaxKind, const char*> MemberNames
 	{
 		{SyntaxKind::BadToken, "BadToken"},
@@ -269,6 +231,7 @@ namespace VSharp
 		{SyntaxKind::OpenBracketToken, "OpenBracketToken"},
 		{SyntaxKind::CloseBracketToken, "CloseBracketToken"},
 
+		{SyntaxKind::TildeToken, "TildeToken"},
 		{SyntaxKind::BangToken, "BangToken"},
 		{SyntaxKind::PlusPlusToken, "PlusPlusToken"},
 		{SyntaxKind::MinusMinusToken, "MinusMinusToken"},
@@ -287,6 +250,8 @@ namespace VSharp
 		{SyntaxKind::PercentEqualsToken, "PercentEqualsToken"},
 		{SyntaxKind::PipeEqualsToken, "PipeEqualsToken"},
 		{SyntaxKind::AmpersandEqualsToken, "AmpersandEqualsToken"},
+		{SyntaxKind::LessLessEqualsToken, "LessLessEqualsToken"},
+		{SyntaxKind::GreaterGreaterEqualsToken, "GreaterGreaterEqualsToken"},
 
 		{SyntaxKind::BangEqualsToken, "BangEqualsToken"},
 		{SyntaxKind::EqualsToken, "EqualsToken"},
@@ -308,6 +273,8 @@ namespace VSharp
 		{SyntaxKind::ColonToken, "ColonToken"},
 		{SyntaxKind::SemicolonToken, "SemicolonToken"},
 
+		{SyntaxKind::ClassKeyword, "class"},
+		{SyntaxKind::StructKeyword, "struct"},
 		{SyntaxKind::NilKeyword, "NilKeyword"},
 		{SyntaxKind::TrueKeyword, "TrueKeyword"},
 		{SyntaxKind::FalseKeyword, "FalseKeyword"},
@@ -324,46 +291,33 @@ namespace VSharp
 		{SyntaxKind::UInt64Keyword, "UInt64Keyword"},
 
 		{SyntaxKind::IdentifierToken, "IdentifierToken"},
-		{SyntaxKind::NumericLiteralToken, "NumericLiteralToken"},
 		{SyntaxKind::StringLiteralToken, "StringLiteralToken"},
 		{SyntaxKind::CharLiteralToken, "CharLiteralToken"},
+
+		{SyntaxKind::BoolLiteralToken, "BoolLiteralToken"},
+		{SyntaxKind::Int8LiteralToken, "Int8LiteralToken"},
+		{SyntaxKind::UInt8LiteralToken, "UInt8LiteralToken"},
+		{SyntaxKind::Int16LiteralToken, "Int16LiteralToken"},
+		{SyntaxKind::UInt16LiteralToken, "UInt16LiteralToken"},
+		{SyntaxKind::Int32LiteralToken, "Int32LiteralToken"},
+		{SyntaxKind::UInt32LiteralToken, "UInt32LiteralToken"},
+		{SyntaxKind::Int64LiteralToken, "Int64LiteralToken"},
+		{SyntaxKind::UInt64LiteralToken, "UInt64LiteralToken"},
+		{SyntaxKind::Float32LiteralToken, "Float32LiteralToken"},
+		{SyntaxKind::Float64LiteralToken, "Float64LiteralToken"},
 	};
 
-	static const Char8* LookupMemberName(const SyntaxKind kind)
+	// Attempt to locate locate a member from SyntaxKind, and return it's human readable name,
+	// since we can retrieve via reflection, we have to use an unordered_map<TKey, TValue>
+	[[nodiscard]] static const Char8* LookupMemberName(const SyntaxKind kind)
 	{
 		if (MemberNames.find(kind) == MemberNames.end())
 		{
+			// this method should never be called in a serious environment, so returning
+			// a "fake" token name will be a better indicator during debugging/testing.
 			return "InvalidTokenKind";
 		}
 
 		return MemberNames[kind];
-	}
-
-	static std::unordered_map<const char*, SyntaxKind> Keywords
-	{
-		{"int8", SyntaxKind::Int8Keyword},
-		{"uint8", SyntaxKind::UInt8Keyword},
-		{"int16", SyntaxKind::Int16Keyword},
-		{"uint16", SyntaxKind::UInt16Keyword},
-		{"int32", SyntaxKind::Int32Keyword},
-		{"uint32", SyntaxKind::UInt32Keyword},
-		{"int64", SyntaxKind::Int64Keyword},
-		{"uint64", SyntaxKind::UInt64Keyword},
-		{"string", SyntaxKind::StringKeyword},
-		{"char", SyntaxKind::CharKeyword},
-		{"bool", SyntaxKind::BoolKeyword},
-		{"true", SyntaxKind::TrueKeyword},
-		{"false", SyntaxKind::FalseKeyword},
-		{"nil", SyntaxKind::NilKeyword},
-	};
-
-	[[nodiscard]] static SyntaxKind LookupKeyword(const char* input)
-	{
-		if (Keywords.find(input) == Keywords.end())
-		{
-			return SyntaxKind::IdentifierToken;
-		}
-
-		return Keywords[input];
 	}
 }

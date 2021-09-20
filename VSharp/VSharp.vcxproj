@@ -155,15 +155,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Lexer.cpp" />
+    <ClCompile Include="Frontend\Lexer.cpp" />
     <ClCompile Include="VSharp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Lexer.hpp" />
-    <ClInclude Include="SyntaxFacts.hpp" />
-    <ClInclude Include="SyntaxToken.hpp" />
-    <ClInclude Include="Types.hpp" />
-    <ClInclude Include="Utils.hpp" />
+    <ClInclude Include="Frontend\Lexer.hpp" />
+    <ClInclude Include="Syntax\SyntaxFacts.hpp" />
+    <ClInclude Include="Syntax\SyntaxKind.hpp" />
+    <ClInclude Include="Syntax\SyntaxToken.hpp" />
+    <ClInclude Include="Utilities\Types.hpp" />
+    <ClInclude Include="Utilities\Utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

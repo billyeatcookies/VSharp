@@ -18,24 +18,27 @@
     <ClCompile Include="VSharp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Lexer.cpp">
+    <ClCompile Include="Frontend\Lexer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Lexer.hpp">
+    <ClInclude Include="Frontend\Lexer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SyntaxToken.hpp">
+    <ClInclude Include="Syntax\SyntaxToken.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.hpp">
+    <ClInclude Include="Utilities\Utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SyntaxFacts.hpp">
+    <ClInclude Include="Syntax\SyntaxFacts.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Types.hpp">
+    <ClInclude Include="Utilities\Types.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Syntax\SyntaxKind.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
