@@ -1,31 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.31624.102
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VSharp", "VSharp\VSharp.vcxproj", "{3B23B700-7C2C-4641-8AE9-208774590A43}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VSharp", "VSharp\VSharp.vcxproj", "{D94F93D6-C5F1-BDAC-AEAC-D1009AED44FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3B23B700-7C2C-4641-8AE9-208774590A43}.Debug|x64.ActiveCfg = Debug|x64
-		{3B23B700-7C2C-4641-8AE9-208774590A43}.Debug|x64.Build.0 = Debug|x64
-		{3B23B700-7C2C-4641-8AE9-208774590A43}.Debug|x86.ActiveCfg = Debug|Win32
-		{3B23B700-7C2C-4641-8AE9-208774590A43}.Debug|x86.Build.0 = Debug|Win32
-		{3B23B700-7C2C-4641-8AE9-208774590A43}.Release|x64.ActiveCfg = Release|x64
-		{3B23B700-7C2C-4641-8AE9-208774590A43}.Release|x64.Build.0 = Release|x64
-		{3B23B700-7C2C-4641-8AE9-208774590A43}.Release|x86.ActiveCfg = Release|Win32
-		{3B23B700-7C2C-4641-8AE9-208774590A43}.Release|x86.Build.0 = Release|Win32
+		{D94F93D6-C5F1-BDAC-AEAC-D1009AED44FD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D94F93D6-C5F1-BDAC-AEAC-D1009AED44FD}.Debug|Win32.Build.0 = Debug|Win32
+		{D94F93D6-C5F1-BDAC-AEAC-D1009AED44FD}.Release|Win32.ActiveCfg = Release|Win32
+		{D94F93D6-C5F1-BDAC-AEAC-D1009AED44FD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {8A73BACC-DBD5-400C-B47E-F761B2F27119}
 	EndGlobalSection
 EndGlobal
