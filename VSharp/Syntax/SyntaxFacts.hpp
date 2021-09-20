@@ -117,6 +117,8 @@ namespace VSharp::Syntax
 				return ">>=";
 			case SyntaxKind::CaretEqualsToken:
 				return "^=";
+			case SyntaxKind::TildeEqualsToken:
+				return "~=";
 
 			// Compiler reserved keywords
 			case SyntaxKind::TypeOfKeyword:

@@ -13,6 +13,8 @@ namespace VSharp::Frontend
 			Types::UInt64 _start;
 			Types::UInt64 _position;
 			Syntax::SyntaxKind _kind;
+			// need to use string since we'll be initializing during the lexing, and not at assignment
+			std::string _text; 
 			std::any _value;
 
 		public:

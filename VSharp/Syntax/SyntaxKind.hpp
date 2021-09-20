@@ -51,6 +51,7 @@ namespace VSharp::Syntax
 		AmpersandEqualsToken,
 		LessLessEqualsToken,
 		GreaterGreaterEqualsToken,
+		TildeEqualsToken,
 
 		BangEqualsToken,
 		EqualsToken,

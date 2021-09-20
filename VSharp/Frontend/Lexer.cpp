@@ -1,6 +1,7 @@
-#include "Lexer.hpp"
 #include <vector>
 #include <iostream>
+
+#include "Lexer.hpp"
 #include "..\Utilities\Utils.hpp"
 #include "..\Syntax\SyntaxFacts.hpp"
 
@@ -35,6 +36,14 @@ namespace VSharp::Frontend
 			case '\0':
 				_kind = Syntax::SyntaxKind::EndOfFileToken;
 				break;
+			case '.':
+				_kind = Syntax::SyntaxKind::DotToken;
+				Advance();
+				break;
+			case ',':
+				_kind = Syntax::SyntaxKind::CommaToken;
+				Advance();
+				break;
 			case '(':
 				_kind = Syntax::SyntaxKind::OpenParenToken;
 				Advance();
@@ -51,6 +60,14 @@ namespace VSharp::Frontend
 				_kind = Syntax::SyntaxKind::CloseBraceToken;
 				Advance();
 				break;
+			case '[':
+				_kind = Syntax::SyntaxKind::OpenBracketToken;
+				Advance();
+				break;
+			case ']':
+				_kind = Syntax::SyntaxKind::CloseBracketToken;
+				Advance();
+				break;
 			case ':':
 				_kind = Syntax::SyntaxKind::ColonToken;
 				Advance();
@@ -62,6 +79,32 @@ namespace VSharp::Frontend
 			case '?':
 				_kind = Syntax::SyntaxKind::QuestionMarkToken;
 				Advance();
+				break;
+			case '^':
+				Advance();
+				switch (Current())
+				{
+					case '=':
+						_kind = Syntax::SyntaxKind::CaretEqualsToken;
+						Advance();
+						break;
+					default:
+						_kind = Syntax::SyntaxKind::CaretToken;
+						break;
+				}
+				break;
+			case '~':
+				Advance();
+				switch (Current())
+				{
+					case '=':
+						_kind = Syntax::SyntaxKind::TildeEqualsToken;
+						Advance();
+						break;
+					default:
+						_kind = Syntax::SyntaxKind::TildeToken;
+						break;
+				}
 				break;
 			case '+':
 				Advance();
@@ -105,6 +148,7 @@ namespace VSharp::Frontend
 						_kind = Syntax::SyntaxKind::FSlashEqualsToken;
 						Advance();
 						break;
+					// TODO: Comments
 					default:
 						_kind = Syntax::SyntaxKind::FSlashToken;
 						break;
@@ -158,8 +202,16 @@ namespace VSharp::Frontend
 						Advance();
 						break;
 					case '>':
-						_kind = Syntax::SyntaxKind::GreaterGreaterToken;
 						Advance();
+						if (Current() == '=')
+						{
+							_kind = Syntax::SyntaxKind::GreaterGreaterEqualsToken;
+							Advance();
+						}
+						else
+						{
+							_kind = Syntax::SyntaxKind::GreaterGreaterToken;
+						}
 						break;
 					default:
 						_kind = Syntax::SyntaxKind::GreaterToken;
@@ -175,8 +227,16 @@ namespace VSharp::Frontend
 						Advance();
 						break;
 					case '<':
-						_kind = Syntax::SyntaxKind::LessLessToken;
 						Advance();
+						if (Current() == '=')
+						{
+							_kind = Syntax::SyntaxKind::LessLessEqualsToken;
+							Advance();
+						}
+						else
+						{
+							_kind = Syntax::SyntaxKind::LessLessToken;
+						}
 						break;
 					default:
 						_kind = Syntax::SyntaxKind::LessToken;
@@ -248,13 +308,16 @@ namespace VSharp::Frontend
 				{
 					ScanIdentifierOrKeyword();
 				}
-				std::cout << Current();
+
+				// We've clearly entered a token that isn't handled
+				std::cerr << "unexpected token '" << Current() << "'" << std::endl;
+				_text = Current();
 				Advance();
 				break;
 		}
 
-		const Types::Char8* text = GetFullTokenText();
-		return Syntax::SyntaxToken(_kind, _position, text, _value);
+		_text = GetFullTokenText();
+		return Syntax::SyntaxToken(_kind, _position, _text.c_str(), _value);
 	}
 
 	const Types::Char8* Lexer::GetFullTokenText() const
@@ -303,8 +366,8 @@ namespace VSharp::Frontend
 			}
 		}
 
-		const Types::Char8* text = GetFullTokenText();
-		_value = atof(text); // this parses to double
+		_text = GetFullTokenText();
+		_value = atof(_text.c_str()); // this parses to double
 		_kind = Syntax::SyntaxKind::Float64LiteralToken;
 	}
 
@@ -367,6 +430,7 @@ namespace VSharp::Frontend
 				}
 			}
 
+			_text = buffer[0];
 			_value = buffer[0];
 		}
 	}
@@ -379,9 +443,10 @@ namespace VSharp::Frontend
 		}
 
 		const Types::UInt64 length = _position - _start;
-		const Types::Char8* text = Utilities::Substring(Source, _start, length);
+		_text = Utilities::Substring(Source, _start, length);
+
 		// Will either be a reserved keyword or IdentifierToken for user defined tokens
-		_kind = Syntax::LookupKeyword(text);
+		_kind = Syntax::LookupKeyword(_text.c_str());
 	}
 
 	Types::Char8 Lexer::Advance()
