@@ -1,9 +1,11 @@
 #include <iostream>
 #include <string>
 #include "Lexer.hpp"
-#include "Types.hpp"
+#include "Utils.hpp"
 
 using namespace VSharp;
+void ExecuteCommand(const std::string& command);
+
 int main() noexcept
 {
 	while (true)
@@ -15,10 +17,16 @@ int main() noexcept
 			std::string inputBuffer;
 			std::getline(std::cin, inputBuffer);
 
-			const SyntaxToken* tokens = Lexer::CollectTokens(inputBuffer.c_str());
-			for (UInt64 i = 0; i < sizeof(&tokens); i++)
+			if (inputBuffer.starts_with('#'))
 			{
-				std::cout << ToString(tokens[i].Kind, TokenFormat::NameValue) << std::endl;
+				ExecuteCommand(inputBuffer);
+				continue;
+			}
+
+			for (const std::vector<SyntaxToken> tokens = Lexer::CollectTokens(ToCharPtr(inputBuffer)); 
+				 const SyntaxToken& token : tokens)
+			{
+				std::cout << LookupMemberName(token.Kind) << std::endl;
 			}
 		}
 		catch (...)
@@ -27,5 +35,25 @@ int main() noexcept
 			// and print so I at least know something went wrong
 			std::cout << "main threw an exception" << std::endl;
 		}
+	}
+}
+
+void ExecuteCommand(const std::string& command)
+{
+	#if defined _WIN32 || defined _WIN64_
+	if (command == "#cls")
+	{
+		// breakdown:
+		// \033[2J: clears the entire screen (J) from top to bottom (2)
+		// \033[1;1H: positions the cursor at row (1), and column (1).
+		std::cout << "\033[2J\033[1;1H";
+	}
+	#else
+	std::cout << "#cls isn't supported on your platform" << std::endl;
+	#endif
+
+	if (command == "#exit")
+	{
+		exit(0);
 	}
 }

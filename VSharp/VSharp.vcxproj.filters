@@ -32,10 +32,7 @@
     <ClInclude Include="Utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SyntaxKind.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TokenInfo.hpp">
+    <ClInclude Include="SyntaxFacts.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Types.hpp">
