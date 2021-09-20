@@ -5,36 +5,19 @@
 
 using namespace VSharp;
 void ExecuteCommand(const std::string& command);
+Int32 ExecuteRepl();
+Int32 ExecuteFile(const char* filepath);
 
-int main() noexcept
+
+int main(int argc, char* argv[]) noexcept
 {
-	while (true)
+	if (argc == 0)
 	{
-		try
-		{
-			std::cout << "> ";
-
-			std::string inputBuffer;
-			std::getline(std::cin, inputBuffer);
-
-			if (inputBuffer.starts_with('#'))
-			{
-				ExecuteCommand(inputBuffer);
-				continue;
-			}
-
-			for (const std::vector<SyntaxToken> tokens = Lexer::CollectTokens(ToCharPtr(inputBuffer)); 
-				 const SyntaxToken& token : tokens)
-			{
-				std::cout << LookupMemberName(token.Kind) << std::endl;
-			}
-		}
-		catch (...)
-		{
-			// tired of seeing crash messages so I just use this to stop it,
-			// and print so I at least know something went wrong
-			std::cout << "main threw an exception" << std::endl;
-		}
+		return ExecuteRepl();
+	}
+	if (argc == 1)
+	{
+		return ExecuteFile(argv[0]);
 	}
 }
 
@@ -55,5 +38,58 @@ void ExecuteCommand(const std::string& command)
 	if (command == "#exit")
 	{
 		exit(0);
+	}
+}
+
+Int32 ExecuteFile(const char* filepath)
+{
+	if (!FileExists(filepath))
+	{
+		std::cerr << "unable to locate '" << filepath << "'" << std::endl;
+		return 1;
+	}
+	
+	const char* input = LoadFile(filepath);
+	for (const std::vector<SyntaxToken> tokens = Lexer::CollectTokens(ToCharPtr(input));
+		const SyntaxToken & token : tokens)
+	{
+		std::cout << LookupMemberName(token.Kind) << std::endl;
+	}
+
+	std::cout << "Press any key to continue...";
+	std::cin;
+	return 0;
+}
+
+
+Int32 ExecuteRepl()
+{
+	while (true)
+	{
+		try
+		{
+			std::cout << "> ";
+
+			std::string inputBuffer;
+			std::getline(std::cin, inputBuffer);
+
+			if (inputBuffer.starts_with('#'))
+			{
+				ExecuteCommand(inputBuffer);
+				continue;
+			}
+
+			for (const std::vector<SyntaxToken> tokens = Lexer::CollectTokens(ToCharPtr(inputBuffer));
+				const SyntaxToken & token : tokens)
+			{
+				std::cout << LookupMemberName(token.Kind) << std::endl;
+			}
+		}
+		catch (...)
+		{
+			// tired of seeing crash messages so I just use this to stop it,
+			// and print so I at least know something went wrong
+			std::cout << "main threw an exception" << std::endl;
+		}
 	}
 }

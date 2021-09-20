@@ -5,12 +5,6 @@
 
 namespace VSharp
 {
-	enum class TokenFormat
-	{
-		TextValue,
-		NameValue
-	};
-
 	enum class SyntaxKind
 	{
 		BadToken,
@@ -95,7 +89,7 @@ namespace VSharp
 		CharLiteralToken,
 	};
 
-	static const char* GetText(const SyntaxKind kind)
+	[[nodiscard]] static const char* GetText(const SyntaxKind kind)
 	{
 		switch (kind)
 		{
