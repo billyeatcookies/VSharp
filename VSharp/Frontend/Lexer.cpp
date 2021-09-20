@@ -1,67 +1,66 @@
 #include "Lexer.hpp"
 #include <vector>
 #include <iostream>
-#include "Utils.hpp"
-#include "SyntaxFacts.hpp"
+#include "..\Utilities\Utils.hpp"
+#include "..\Syntax\SyntaxFacts.hpp"
 
-namespace VSharp
+namespace VSharp::Frontend
 {
-	std::vector<SyntaxToken> Lexer::CollectTokens(const Char8* source)
+	std::vector<Syntax::SyntaxToken> Lexer::CollectTokens(const Types::Char8* source)
 	{
 		Lexer lexer(source);
-		std::vector<SyntaxToken> tokens{};
-		SyntaxToken token{};
+		std::vector<Syntax::SyntaxToken> tokens{};
+		Syntax::SyntaxToken token{};
 
 		do
 		{
 			token = lexer.ScanSyntaxToken();
-			if (token.Kind != SyntaxKind::BadToken)
+			if (token.Kind != Syntax::SyntaxKind::BadToken)
 			{
 				tokens.push_back(token);
 			}
-		} while (token.Kind != SyntaxKind::EndOfFileToken);
+		} while (token.Kind != Syntax::SyntaxKind::EndOfFileToken);
 
 		return tokens;
 	}
 
-	// 12.12 + 12.12
-	SyntaxToken Lexer::ScanSyntaxToken()
+	Syntax::SyntaxToken Lexer::ScanSyntaxToken()
 	{
 		_start = _position;
 		_value = nullptr;
-		_kind = SyntaxKind::BadToken;
+		_kind = Syntax::SyntaxKind::BadToken;
 
 		switch (Current())
 		{
 			case '\0':
-				_kind = SyntaxKind::EndOfFileToken;
+				_kind = Syntax::SyntaxKind::EndOfFileToken;
 				break;
 			case '(':
-				_kind = SyntaxKind::OpenParenToken;
+				_kind = Syntax::SyntaxKind::OpenParenToken;
 				Advance();
 				break;
 			case ')':
-				_kind = SyntaxKind::CloseParenToken;
+				_kind = Syntax::SyntaxKind::CloseParenToken;
 				Advance();
 				break;
 			case '{':
-				_kind = SyntaxKind::OpenBraceToken;
+				_kind = Syntax::SyntaxKind::OpenBraceToken;
 				Advance();
 				break;
 			case '}':
-				_kind = SyntaxKind::CloseBraceToken;
+				_kind = Syntax::SyntaxKind::CloseBraceToken;
 				Advance();
 				break;
 			case ':':
-				_kind = SyntaxKind::ColonToken;
+				_kind = Syntax::SyntaxKind::ColonToken;
 				Advance();
 				break;
 			case ';':
-				_kind = SyntaxKind::SemicolonToken;
+				_kind = Syntax::SyntaxKind::SemicolonToken;
 				Advance();
 				break;
 			case '?':
-				_kind = SyntaxKind::QuestionMarkToken;
+				_kind = Syntax::SyntaxKind::QuestionMarkToken;
 				Advance();
 				break;
 			case '+':
@@ -69,15 +68,15 @@ namespace VSharp
 				switch (Current())
 				{
 					case '+':
-						_kind = SyntaxKind::PlusPlusToken;
+						_kind = Syntax::SyntaxKind::PlusPlusToken;
 						Advance();
 						break;
 					case '=':
-						_kind = SyntaxKind::PlusEqualsToken;
+						_kind = Syntax::SyntaxKind::PlusEqualsToken;
 						Advance();
 						break;
 					default:
-						_kind = SyntaxKind::PlusToken;
+						_kind = Syntax::SyntaxKind::PlusToken;
 						break;
 				}
 				break;
@@ -86,15 +85,15 @@ namespace VSharp
 				switch (Current())
 				{
 				case '-':
-					_kind = SyntaxKind::MinusMinusToken;
+					_kind = Syntax::SyntaxKind::MinusMinusToken;
 					Advance();
 					break;
 				case '=':
-					_kind = SyntaxKind::MinusEqualsToken;
+					_kind = Syntax::SyntaxKind::MinusEqualsToken;
 					Advance();
 					break;
 				default:
-					_kind = SyntaxKind::MinusToken;
+					_kind = Syntax::SyntaxKind::MinusToken;
 					break;
 				}
 				break;
@@ -103,11 +102,11 @@ namespace VSharp
 				switch (Current())
 				{
 					case '=':
-						_kind = SyntaxKind::FSlashEqualsToken;
+						_kind = Syntax::SyntaxKind::FSlashEqualsToken;
 						Advance();
 						break;
 					default:
-						_kind = SyntaxKind::FSlashToken;
+						_kind = Syntax::SyntaxKind::FSlashToken;
 						break;
 				}
 				break;
@@ -116,11 +115,11 @@ namespace VSharp
 				switch (Current())
 				{
 					case '=':
-						_kind = SyntaxKind::AsteriskEqualsToken;
+						_kind = Syntax::SyntaxKind::AsteriskEqualsToken;
 						Advance();
 						break;
 					default:
-						_kind = SyntaxKind::MinusToken;
+						_kind = Syntax::SyntaxKind::MinusToken;
 						break;
 				}
 				break;
@@ -129,11 +128,11 @@ namespace VSharp
 				switch (Current())
 				{
 					case '=':
-						_kind = SyntaxKind::PercentEqualsToken;
+						_kind = Syntax::SyntaxKind::PercentEqualsToken;
 						Advance();
 						break;
 					default:
-						_kind = SyntaxKind::PercentToken;
+						_kind = Syntax::SyntaxKind::PercentToken;
 						break;
 				}
 				break;
@@ -142,11 +141,11 @@ namespace VSharp
 				switch (Current())
 				{
 					case '=':
-						_kind = SyntaxKind::EqualsEqualsToken;
+						_kind = Syntax::SyntaxKind::EqualsEqualsToken;
 						Advance();
 						break;
 					default:
-						_kind = SyntaxKind::EqualsToken;
+						_kind = Syntax::SyntaxKind::EqualsToken;
 						break;
 				}
 				break;
@@ -155,15 +154,15 @@ namespace VSharp
 				switch (Current())
 				{
 					case '=':
-						_kind = SyntaxKind::GreaterEqualsToken;
+						_kind = Syntax::SyntaxKind::GreaterEqualsToken;
 						Advance();
 						break;
 					case '>':
-						_kind = SyntaxKind::GreaterGreaterToken;
+						_kind = Syntax::SyntaxKind::GreaterGreaterToken;
 						Advance();
 						break;
 					default:
-						_kind = SyntaxKind::GreaterToken;
+						_kind = Syntax::SyntaxKind::GreaterToken;
 						break;
 				}
 				break;
@@ -172,15 +171,15 @@ namespace VSharp
 				switch (Current())
 				{
 					case '=':
-						_kind = SyntaxKind::LessEqualsToken;
+						_kind = Syntax::SyntaxKind::LessEqualsToken;
 						Advance();
 						break;
 					case '<':
-						_kind = SyntaxKind::LessLessToken;
+						_kind = Syntax::SyntaxKind::LessLessToken;
 						Advance();
 						break;
 					default:
-						_kind = SyntaxKind::LessToken;
+						_kind = Syntax::SyntaxKind::LessToken;
 						break;
 				}
 				break;
@@ -189,11 +188,11 @@ namespace VSharp
 				switch (Current())
 				{
 					case '=':
-						_kind = SyntaxKind::BangEqualsToken;
+						_kind = Syntax::SyntaxKind::BangEqualsToken;
 						Advance();
 						break;
 					default:
-						_kind = SyntaxKind::BangToken;
+						_kind = Syntax::SyntaxKind::BangToken;
 						break;
 				}
 				break;
@@ -202,15 +201,15 @@ namespace VSharp
 				switch (Current())
 				{
 					case '=':
-						_kind = SyntaxKind::PipeEqualsToken;
+						_kind = Syntax::SyntaxKind::PipeEqualsToken;
 						Advance();
 						break;
 					case '|':
-						_kind = SyntaxKind::PipePipeToken;
+						_kind = Syntax::SyntaxKind::PipePipeToken;
 						Advance();
 						break;
 					default:
-						_kind = SyntaxKind::PipeToken;
+						_kind = Syntax::SyntaxKind::PipeToken;
 						break;
 				}
 				break;
@@ -219,15 +218,15 @@ namespace VSharp
 				switch (Current())
 				{
 					case '=':
-						_kind = SyntaxKind::AmpersandEqualsToken;
+						_kind = Syntax::SyntaxKind::AmpersandEqualsToken;
 						Advance();
 						break;
 					case '&':
-						_kind = SyntaxKind::AmpersandAmpersandToken;
+						_kind = Syntax::SyntaxKind::AmpersandAmpersandToken;
 						Advance();
 						break;
 					default:
-						_kind = SyntaxKind::AmpersandToken;
+						_kind = Syntax::SyntaxKind::AmpersandToken;
 						break;
 				}
 				break;
@@ -236,16 +235,16 @@ namespace VSharp
 				ScanStringOrCharLiteral();
 				break;
 			default:
-				if (IsWhiteSpace(Current()))
+				if (Utilities::IsWhiteSpace(Current()))
 				{
 					ScanWhiteSpaces();
 				}
-				if (IsDigit(Current()))
+				if (Utilities::IsDigit(Current()))
 				{
 					ScanNumericLiteral();
 				}
 				// check if it's valid a-z, A-Z or contains an underscore _
-				if (IsAlpha(Current()))
+				if (Utilities::IsAlpha(Current()))
 				{
 					ScanIdentifierOrKeyword();
 				}
@@ -254,23 +253,23 @@ namespace VSharp
 				break;
 		}
 
-		const Char8* text = GetFullTokenText();
-		return SyntaxToken(_kind, _position, text, _value);
+		const Types::Char8* text = GetFullTokenText();
+		return Syntax::SyntaxToken(_kind, _position, text, _value);
 	}
 
-	const Char8* Lexer::GetFullTokenText() const
+	const Types::Char8* Lexer::GetFullTokenText() const
 	{
 
 		const unsigned int length = _position - _start;
-		const Char8* text = VSharp::Substring(Source, _start, length);
+		const Types::Char8* text = Utilities::Substring(Source, _start, length);
 		return text;
 	}
 
-	Char8 Lexer::Peek(const Int64 offset) const
+	Types::Char8 Lexer::Peek(const Types::Int64 offset) const
 	{
 		// the index should never be negative, but if we take a negative offset,
 		// it means we want to peek to previous characters 
-		const UInt64 index = _position + offset;
+		const Types::UInt64 index = _position + offset;
 		if (index >= std::strlen(Source))
 		{
 			return '\0';
@@ -281,7 +280,7 @@ namespace VSharp
 
 	void Lexer::ScanWhiteSpaces()
 	{
-		while (IsWhiteSpace(Current()))
+		while (Utilities::IsWhiteSpace(Current()))
 		{
 			Advance();
 		}
@@ -290,23 +289,23 @@ namespace VSharp
 	// TODO: Fully support floats, and assign correct types
 	void Lexer::ScanNumericLiteral()
 	{
-		while (IsDigit(Current()))
+		while (Utilities::IsDigit(Current()))
 		{
 			Advance();
 		}
 
-		if (Current() == '.' && IsDigit(Next()))
+		if (Current() == '.' && Utilities::IsDigit(Next()))
 		{
 			Advance();
-			while (IsDigit(Current()))
+			while (Utilities::IsDigit(Current()))
 			{
 				Advance();
 			}
 		}
 
-		const Char8* text = GetFullTokenText();
+		const Types::Char8* text = GetFullTokenText();
 		_value = atof(text); // this parses to double
-		_kind = SyntaxKind::Float64LiteralToken;
+		_kind = Syntax::SyntaxKind::Float64LiteralToken;
 	}
 
 	// TODO: Support escapes
@@ -348,7 +347,7 @@ namespace VSharp
 			}
 		}
 
-		_kind = quoteChar == '"' ? SyntaxKind::StringLiteralToken : SyntaxKind::CharLiteralToken;
+		_kind = quoteChar == '"' ? Syntax::SyntaxKind::StringLiteralToken : Syntax::SyntaxKind::CharLiteralToken;
 
 		if (quoteChar == '"')
 		{
@@ -374,18 +373,18 @@ namespace VSharp
 
 	void Lexer::ScanIdentifierOrKeyword()
 	{
-		while (IsAlphanumeric(Current()))
+		while (Utilities::IsAlphanumeric(Current()))
 		{
 			Advance();
 		}
 
-		const UInt64 length = _position - _start;
-		const Char8* text = Substring(Source, _start, length);
+		const Types::UInt64 length = _position - _start;
+		const Types::Char8* text = Utilities::Substring(Source, _start, length);
 		// Will either be a reserved keyword or IdentifierToken for user defined tokens
-		_kind = LookupKeyword(text);
+		_kind = Syntax::LookupKeyword(text);
 	}
 
-	Char8 Lexer::Advance()
+	Types::Char8 Lexer::Advance()
 	{
 		if (_position == std::strlen(Source))
 		{

@@ -1,12 +1,12 @@
 #include <iostream>
 #include <string>
-#include "Lexer.hpp"
-#include "Utils.hpp"
+#include "Frontend\Lexer.hpp"
+#include "Utilities\Utils.hpp"
 
 using namespace VSharp;
 void ExecuteCommand(const std::string& command);
-Int32 ExecuteRepl();
-Int32 ExecuteFile(const char* filepath);
+Types::Int32 ExecuteRepl();
+Types::Int32 ExecuteFile(const char* filepath);
 
 
 int main(int argc, char* argv[]) noexcept
@@ -41,19 +41,19 @@ void ExecuteCommand(const std::string& command)
 	}
 }
 
-Int32 ExecuteFile(const char* filepath)
+Types::Int32 ExecuteFile(const char* filepath)
 {
-	if (!FileExists(filepath))
+	if (!Utilities::FileExists(filepath))
 	{
 		std::cerr << "unable to locate '" << filepath << "'" << std::endl;
 		return 1;
 	}
 	
-	const char* input = LoadFile(filepath);
-	for (const std::vector<SyntaxToken> tokens = Lexer::CollectTokens(ToCharPtr(input));
-		const SyntaxToken & token : tokens)
+	const char* input = Utilities::LoadFile(filepath);
+	for (const std::vector<Syntax::SyntaxToken> tokens = Frontend::Lexer::CollectTokens(Utilities::ToCharPtr(input));
+		const Syntax::SyntaxToken & token : tokens)
 	{
-		std::cout << LookupMemberName(token.Kind) << std::endl;
+		std::cout << Syntax::LookupMemberName(token.Kind) << std::endl;
 	}
 
 	std::cout << "Press any key to continue...";
@@ -62,7 +62,7 @@ Int32 ExecuteFile(const char* filepath)
 }
 
 
-Int32 ExecuteRepl()
+Types::Int32 ExecuteRepl()
 {
 	while (true)
 	{
@@ -79,10 +79,10 @@ Int32 ExecuteRepl()
 				continue;
 			}
 
-			for (const std::vector<SyntaxToken> tokens = Lexer::CollectTokens(ToCharPtr(inputBuffer));
-				const SyntaxToken & token : tokens)
+			for (const std::vector<Syntax::SyntaxToken> tokens = Frontend::Lexer::CollectTokens(Utilities::ToCharPtr(inputBuffer));
+				const Syntax::SyntaxToken & token : tokens)
 			{
-				std::cout << LookupMemberName(token.Kind) << std::endl;
+				std::cout << Syntax::LookupMemberName(token.Kind) << std::endl;
 			}
 		}
 		catch (...)

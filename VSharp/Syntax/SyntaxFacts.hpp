@@ -6,7 +6,7 @@
 
 namespace VSharp::Syntax
 {
-	[[nodiscard]] static const Utilities::Char8* LookupMemberName(const SyntaxKind kind);
+	[[nodiscard]] static const Types::Char8* LookupMemberName(const SyntaxKind kind);
 	[[nodiscard]] static SyntaxKind LookupKeyword(const char* input);
 
 	[[nodiscard]] static const char* GetText(const SyntaxKind kind)
@@ -309,7 +309,7 @@ namespace VSharp::Syntax
 
 	// Attempt to locate locate a member from SyntaxKind, and return it's human readable name,
 	// since we can retrieve via reflection, we have to use an unordered_map<TKey, TValue>
-	[[nodiscard]] static const Char8* LookupMemberName(const SyntaxKind kind)
+	[[nodiscard]] static const Types::Char8* LookupMemberName(const SyntaxKind kind)
 	{
 		if (MemberNames.find(kind) == MemberNames.end())
 		{
