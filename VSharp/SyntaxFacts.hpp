@@ -81,13 +81,29 @@ namespace VSharp
 		UInt32Keyword,
 		Int64Keyword,
 		UInt64Keyword,
+		Float32Keyword,
+		Float64Keyword,
 
-		// ect for now
 		IdentifierToken,
 
-		NumericLiteralToken,
+		// Literal values
+		// Lexing is the only time we have the easiest access to the literals true type,
+		// assigning it to a true literal token will allow us to any_cast<T> the type to
+		// the proper .NET type for binding/compilation. Switching enums is also cheaper
+		// than type validation :)
 		StringLiteralToken,
 		CharLiteralToken,
+		BoolLiteralToken,
+		Int8LiteralToken,
+		UInt8LiteralToken,
+		Int16LiteralToken,
+		UInt16LiteralToken,
+		Int32LiteralToken,
+		UInt32LiteralToken,
+		Int64LiteralToken,
+		UInt64LiteralToken,
+		Float32LiteralToken,
+		Float64LiteralToken,
 	};
 
 	[[nodiscard]] static const char* GetText(const SyntaxKind kind)
