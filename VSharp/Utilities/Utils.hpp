@@ -3,10 +3,16 @@
 #include <filesystem>
 #include <fstream>
 #include "Types.hpp"
-#include <tuple>
+#include <assert.h>
 
 namespace VSharp::Utilities
 {
+	#if defined _WIN32 || _WIN64
+	constexpr const Types::Char8* NewLine = "\r\n";
+	#else
+	constexpr const Types::Char8* NewLine = "\n";
+	#endif
+
 	[[nodiscard]] static const Types::Char8* Substring(const Types::Char8* input, const Types::UInt64 start, const Types::UInt64 length)
 	{
 		Types::Char8* buffer = new Types::Char8[static_cast<Types::UInt32>(length + 1ui64)];
@@ -42,9 +48,69 @@ namespace VSharp::Utilities
 		return ToCharPtr(text);
 	}
 
+	[[nodiscard]] static bool IsHexDigit(const Types::Char8& ch)
+	{
+		return (ch >= '0' && ch <= '9') || 
+			   (ch >= 'A' && ch <= 'F') ||
+			   (ch >= 'a' && ch <= 'f');
+	}
+
+	[[nodiscard]] static bool IsBinaryDigit(const Types::Char8& ch)
+	{
+		return ch == '0' | ch == '1';
+	}
+
+	[[nodiscard]] static bool IsDecDigit(const Types::Char8& ch)
+	{
+		return ch >= '0' && ch <= '9';
+	}
+
+	[[nodiscard]] static Types::Int32 HexValue(const Types::Char8& ch)
+	{
+		assert(IsHexDigit(ch));
+		return (ch >= '0' && ch <= '9') ? ch - '0' : (ch & 0xdf) - 'A' + 10;
+	}
+
+	[[nodiscard]] static Types::Int32 BinaryDigit(const Types::Char8& ch)
+	{
+		assert(IsBinaryDigit(ch));
+		return ch - '0';
+	}
+
+	[[nodiscard]] static Types::Int32 DecValue(const Types::Char8& ch)
+	{
+		assert(IsDecDigit(ch));
+		return ch - '0';
+	}
+
 	[[nodiscard]] static bool IsWhiteSpace(const Types::Char8& ch)
 	{
-		return isspace(ch);
+		return ch == ' '
+			|| ch == '\t'
+			|| ch == '\v'
+			|| ch == '\f'
+			|| ch == '\u00A0'
+			|| ch == '\uFEFF'
+			|| ch == '\u001A';
+			// TODO: support more unicode space separators
+	}
+
+	[[nodiscard]] static bool IsNewLine(const Types::Char8& ch)
+	{
+		return ch == '\r'
+			|| ch == '\n'
+			|| ch == '\u0085'
+			// I'm not sure why I'm getting a clang identical warning?
+			|| ch == '\u2028'
+			|| ch == '\u2029';
+	}
+
+	[[nodiscard]] static bool IsNonAsciiQuotationMark(const Types::Char8& ch)
+	{
+		return ch == '\u2018' // left single quotation mark
+			|| ch == '\u2019' // right single quotation mark
+			|| ch == '\u201C' // left double quotation mark
+			|| ch == '\u201D'; // right double quotation mark
 	}
 
 	// TODO: Support more unicode? What happens if someone writes code in Russian or Chinese?

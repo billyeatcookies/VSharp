@@ -16,7 +16,8 @@ namespace VSharp::Frontend
 		do
 		{
 			token = lexer.ScanSyntaxToken();
-			if (token.Kind != Syntax::SyntaxKind::BadToken)
+			if (token.Kind != Syntax::SyntaxKind::WhiteSpaceToken && 
+				token.Kind != Syntax::SyntaxKind::BadToken)
 			{
 				tokens.push_back(token);
 			}
@@ -33,7 +34,7 @@ namespace VSharp::Frontend
 
 		switch (Current())
 		{
-			case '\0':
+			case -1:
 				_kind = Syntax::SyntaxKind::EndOfFileToken;
 				break;
 			case '.':
@@ -392,7 +393,7 @@ namespace VSharp::Frontend
 		const Types::UInt64 index = _position + offset;
 		if (index >= std::strlen(Source))
 		{
-			return '\0';
+			return -1;
 		}
 
 		return Source[index];
@@ -412,7 +413,7 @@ namespace VSharp::Frontend
 	{
 		// TODO(1): Fully support floats, and assign correct types
 		// TODO(2): Fully support binary, hex, and literal suffixes 
-		// TODO(2): such as 'ui64' so people can use "12ui64" to
+		// TODO(2): such as 'UI64' so people can use "12UI64" to
 		// TODO(2): fully express intent when assigning with "var"
 
 		bool hasSeparator = false;
@@ -512,25 +513,6 @@ namespace VSharp::Frontend
 				_value = value;
 			}
 		}
-
-		/*while (Utilities::IsDigit(Current()))
-		{
-			Advance();
-		}
-
-		if (Current() == '.' && Utilities::IsDigit(Next()))
-		{
-			Advance();
-			while (Utilities::IsDigit(Current()))
-			{
-				Advance();
-			}
-		}
-
-		const Types::Char8* text = GetFullTokenText();
-		_value = strtod(text, nullptr);
-		_kind = Syntax::SyntaxKind::Float64LiteralToken;
-		*/
 	}
 
 	// TODO: Support escapes

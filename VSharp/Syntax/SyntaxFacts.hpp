@@ -172,45 +172,110 @@ namespace VSharp::Syntax
 		}
 	}
 
-	// All compiler reserved keywords
-	static std::unordered_map<const Types::Char8*, SyntaxKind> Keywords
-	{
-		{"typeof", SyntaxKind::TypeOfKeyword},
-		{"nameof", SyntaxKind::NameOfKeyword},
-		{"sizeof", SyntaxKind::SizeOfKeyword},
-		{"new", SyntaxKind::NewKeyword},
-
-		{"int8", SyntaxKind::Int8Keyword},
-		{"uint8", SyntaxKind::UInt8Keyword},
-		{"int16", SyntaxKind::Int16Keyword},
-		{"uint16", SyntaxKind::UInt16Keyword},
-		{"int32", SyntaxKind::Int32Keyword},
-		{"uint32", SyntaxKind::UInt32Keyword},
-		{"int64", SyntaxKind::Int64Keyword},
-		{"uint64", SyntaxKind::UInt64Keyword},
-
-		{"string", SyntaxKind::StringKeyword},
-		{"char", SyntaxKind::CharKeyword},
-		{"bool", SyntaxKind::BoolKeyword},
-		{"true", SyntaxKind::TrueKeyword},
-
-		{"false", SyntaxKind::FalseKeyword},
-
-		{"nil", SyntaxKind::NilKeyword},
-
-		{"class", SyntaxKind::ClassKeyword},
-		{"struct", SyntaxKind::StructKeyword},
-	};
-
 	// This should be self explanatory
 	[[nodiscard]] static SyntaxKind LookupKeyword(const Types::Char8* input)
 	{
-		if (Keywords.find(input) == Keywords.end())
+		if (std::strcmp(input, "typeof") == 0)
 		{
-			return SyntaxKind::IdentifierToken;
+			return SyntaxKind::TypeOfKeyword;
+		}
+		if (std::strcmp(input, "nameof") == 0)
+		{
+			return SyntaxKind::NameOfKeyword;
+		}
+		if (std::strcmp(input, "sizeof") == 0)
+		{
+			return SyntaxKind::SizeOfKeyword;
+		}
+		if (std::strcmp(input, "new") == 0)
+		{
+			return SyntaxKind::NewKeyword;
 		}
 
-		return Keywords[input];
+
+		if (std::strcmp(input, "int8") == 0)
+		{
+			return SyntaxKind::Int8Keyword;
+		}
+		if (std::strcmp(input, "uint8") == 0)
+		{
+			return SyntaxKind::UInt8Keyword;
+		}
+		if (std::strcmp(input, "int16") == 0)
+		{
+			return SyntaxKind::Int16Keyword;
+		}
+		if (std::strcmp(input, "uint16") == 0)
+		{
+			return SyntaxKind::UInt16Keyword;
+		}
+		if (std::strcmp(input, "int32") == 0)
+		{
+			return SyntaxKind::Int32Keyword;
+		}
+		if (std::strcmp(input, "uint32") == 0)
+		{
+			return SyntaxKind::UInt32Keyword;
+		}
+		if (std::strcmp(input, "int64") == 0)
+		{
+			return SyntaxKind::Int64Keyword;
+		}
+		if (std::strcmp(input, "uint64") == 0)
+		{
+			return SyntaxKind::UInt64Keyword;
+		}
+		if (std::strcmp(input, "float32") == 0)
+		{
+			return SyntaxKind::Float32Keyword;
+		}
+		if (std::strcmp(input, "float64") == 0)
+		{
+			return SyntaxKind::Float64Keyword;
+		}
+
+
+
+		if (std::strcmp(input, "string") == 0)
+		{
+			return SyntaxKind::StringKeyword;
+		}
+		if (std::strcmp(input, "char") == 0)
+		{
+			return SyntaxKind::CharKeyword;
+		}
+		if (std::strcmp(input, "bool") == 0)
+		{
+			return SyntaxKind::BoolKeyword;
+		}
+		if (std::strcmp(input, "true") == 0)
+		{
+			return SyntaxKind::TrueKeyword;
+		}
+		if (std::strcmp(input, "false") == 0)
+		{
+			return SyntaxKind::FalseKeyword;
+		}
+
+		if (std::strcmp(input, "nil") == 0)
+		{
+			return SyntaxKind::NilKeyword;
+		}
+
+		if (std::strcmp(input, "class") == 0)
+		{
+			return SyntaxKind::ClassKeyword;
+		}
+		if (std::strcmp(input, "struct") == 0)
+		{
+			return SyntaxKind::StructKeyword;
+		}
+		if (std::strcmp(input, "static") == 0)
+		{
+			return SyntaxKind::StaticKeyword;
+		}
+
+		return SyntaxKind::IdentifierToken;
 	}
 	
 	// Since C++ doesn't have the ability to use reflection to get member data off enums such as their name
@@ -285,6 +350,7 @@ namespace VSharp::Syntax
 
 		{SyntaxKind::ClassKeyword, "ClassKeyword"},
 		{SyntaxKind::StructKeyword, "StructKeyword"},
+		{SyntaxKind::StaticKeyword, "StaticKeyword"},
 
 		{SyntaxKind::NilKeyword, "NilKeyword"},
 

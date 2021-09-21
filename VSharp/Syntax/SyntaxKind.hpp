@@ -2,6 +2,7 @@
 
 // Corresponding maps and methods located in SyntaxFacts.hpp, holding all the data that defines
 // a specific tokens behaviour and its value.
+
 namespace VSharp::Syntax
 {
 	// | ================== NOTICE ===================== | 
@@ -82,6 +83,7 @@ namespace VSharp::Syntax
 		NewKeyword,
 		ClassKeyword,
 		StructKeyword,
+		StaticKeyword,
 		NilKeyword,
 		TrueKeyword,
 		FalseKeyword,

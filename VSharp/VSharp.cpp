@@ -2,6 +2,7 @@
 #include <string>
 #include "Frontend\Lexer.hpp"
 #include "Utilities\Utils.hpp"
+#include "Utilities\NumericParsing.hpp"
 
 using namespace VSharp;
 void ExecuteCommand(const Types::Char8* command);
@@ -10,7 +11,19 @@ Types::Int32 ExecuteFile(const char* filepath);
 
 int main(int argc, char* argv[]) noexcept
 {
-	return ExecuteRepl();
+	const auto result = Utilities::TryParseF32("69.69");
+	const bool ok = std::get<1>(result);
+	if (!ok)
+	{
+		std::cout << "unable to parse" << std::endl;
+	}
+	else
+	{
+		const auto value = std::get<0>(result);
+		std::cout << sizeof(value) << std::endl;
+		std::cout << value << std::endl;
+	}
+	// return ExecuteRepl();
 	/*if (argc == 0)
 	{
 	}
@@ -22,7 +35,7 @@ int main(int argc, char* argv[]) noexcept
 
 void ExecuteCommand(const Types::Char8* command)
 {
-	#if defined _WIN32 || defined _WIN64_
+	#if defined _WIN32 || defined _WIN64
 	if (command == "#cls")
 	{
 		// breakdown:
