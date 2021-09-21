@@ -205,7 +205,6 @@ namespace VSharp::Syntax
 	// This should be self explanatory
 	[[nodiscard]] static SyntaxKind LookupKeyword(const Types::Char8* input)
 	{
-		std::cout << input << std::endl;
 		if (Keywords.find(input) == Keywords.end())
 		{
 			return SyntaxKind::IdentifierToken;

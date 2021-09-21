@@ -404,11 +404,17 @@ namespace VSharp::Frontend
 		{
 			Advance();
 		}
+
+		_kind = Syntax::SyntaxKind::WhiteSpaceToken;
 	}
 
-	// TODO: Fully support floats, and assign correct types
 	void Lexer::ScanNumericLiteral()
 	{
+		// TODO(1): Fully support floats, and assign correct types
+		// TODO(2): Fully support binary, hex, and literal suffixes 
+		// TODO(2): such as 'ui64' so people can use "12ui64" to
+		// TODO(2): fully express intent when assigning with "var"
+
 		bool hasSeparator = false;
 		bool hasDecimal = false;
 		bool hasMultipleDecimals = false;
