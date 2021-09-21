@@ -4,10 +4,9 @@
 #include "Utilities\Utils.hpp"
 
 using namespace VSharp;
-void ExecuteCommand(const std::string& command);
+void ExecuteCommand(const Types::Char8* command);
 Types::Int32 ExecuteRepl();
 Types::Int32 ExecuteFile(const char* filepath);
-
 
 int main(int argc, char* argv[]) noexcept
 {
@@ -21,7 +20,7 @@ int main(int argc, char* argv[]) noexcept
 	}*/
 }
 
-void ExecuteCommand(const std::string& command)
+void ExecuteCommand(const Types::Char8* command)
 {
 	#if defined _WIN32 || defined _WIN64_
 	if (command == "#cls")
@@ -49,8 +48,8 @@ Types::Int32 ExecuteFile(const char* filepath)
 		return 1;
 	}
 	
-	const char* input = Utilities::LoadFile(filepath);
-	for (const std::vector<Syntax::SyntaxToken> tokens = Frontend::Lexer::CollectTokens(Utilities::ToCharPtr(input));
+	const Types::Char8* input = Utilities::LoadFile(filepath);
+	for (const std::vector<Syntax::SyntaxToken> tokens = Frontend::Lexer::CollectTokens(input);
 		const Syntax::SyntaxToken & token : tokens)
 	{
 		std::cout << Syntax::LookupMemberName(token.Kind) << std::endl;
@@ -74,11 +73,11 @@ Types::Int32 ExecuteRepl()
 
 			if (inputBuffer.starts_with('#'))
 			{
-				ExecuteCommand(inputBuffer);
+				ExecuteCommand(inputBuffer.data());
 				continue;
 			}
 
-			for (const std::vector<Syntax::SyntaxToken> tokens = Frontend::Lexer::CollectTokens(Utilities::ToCharPtr(inputBuffer));
+			for (const std::vector<Syntax::SyntaxToken> tokens = Frontend::Lexer::CollectTokens(inputBuffer.data());
 				const Syntax::SyntaxToken & token : tokens)
 			{
 				std::cout << Syntax::LookupMemberName(token.Kind) << std::endl;

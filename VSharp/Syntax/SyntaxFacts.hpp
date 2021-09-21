@@ -7,9 +7,9 @@
 namespace VSharp::Syntax
 {
 	[[nodiscard]] static const Types::Char8* LookupMemberName(const SyntaxKind kind);
-	[[nodiscard]] static SyntaxKind LookupKeyword(const char* input);
+	[[nodiscard]] static SyntaxKind LookupKeyword(const Types::Char8* input);
 
-	[[nodiscard]] static const char* GetText(const SyntaxKind kind)
+	[[nodiscard]] static const Types::Char8* GetText(const SyntaxKind kind)
 	{
 		// TODO: I'm not sure if I want this to also be an unordered_map yet since it's also sharing reserved keywords 
 		
@@ -173,7 +173,7 @@ namespace VSharp::Syntax
 	}
 
 	// All compiler reserved keywords
-	static std::unordered_map<const char*, SyntaxKind> Keywords
+	static std::unordered_map<const Types::Char8*, SyntaxKind> Keywords
 	{
 		{"typeof", SyntaxKind::TypeOfKeyword},
 		{"nameof", SyntaxKind::NameOfKeyword},
@@ -198,13 +198,14 @@ namespace VSharp::Syntax
 
 		{"nil", SyntaxKind::NilKeyword},
 
-		{"class", SyntaxKind::StructKeyword},
+		{"class", SyntaxKind::ClassKeyword},
 		{"struct", SyntaxKind::StructKeyword},
 	};
 
 	// This should be self explanatory
-	[[nodiscard]] static SyntaxKind LookupKeyword(const char* input)
+	[[nodiscard]] static SyntaxKind LookupKeyword(const Types::Char8* input)
 	{
+		std::cout << input << std::endl;
 		if (Keywords.find(input) == Keywords.end())
 		{
 			return SyntaxKind::IdentifierToken;
@@ -216,7 +217,7 @@ namespace VSharp::Syntax
 	// Since C++ doesn't have the ability to use reflection to get member data off enums such as their name
 	// we map them to a dictionary to easily retrieve. This isn't used very often in the compiler itself,
 	// but it's very nice to have this exposed as an outward facing API to access the names of a SyntaxKind (if ever needed)
-	static std::unordered_map<SyntaxKind, const char*> MemberNames
+	static std::unordered_map<SyntaxKind, const Types::Char8*> MemberNames
 	{
 		{SyntaxKind::BadToken, "BadToken"},
 		{SyntaxKind::EndOfFileToken, "EndOfFileToken"},
@@ -243,8 +244,10 @@ namespace VSharp::Syntax
 		{SyntaxKind::AsteriskToken, "AsteriskToken"},
 		{SyntaxKind::FSlashToken, "FSlashToken"},
 		{SyntaxKind::PercentToken, "PercentToken"},
+		{SyntaxKind::CaretToken, "CaretToken"},
 		{SyntaxKind::QuestionMarkToken, "QuestionMarkToken"},
 
+		{SyntaxKind::CaretEqualsToken, "CaretEqualsToken"},
 		{SyntaxKind::PlusEqualsToken, "PlusEqualsToken"},
 		{SyntaxKind::MinusEqualsToken, "MinusEqualsToken"},
 		{SyntaxKind::AsteriskEqualsToken, "AsteriskEqualsToken"},
@@ -254,6 +257,7 @@ namespace VSharp::Syntax
 		{SyntaxKind::AmpersandEqualsToken, "AmpersandEqualsToken"},
 		{SyntaxKind::LessLessEqualsToken, "LessLessEqualsToken"},
 		{SyntaxKind::GreaterGreaterEqualsToken, "GreaterGreaterEqualsToken"},
+		{SyntaxKind::TildeEqualsToken, "TildeEqualsToken"},
 
 		{SyntaxKind::BangEqualsToken, "BangEqualsToken"},
 		{SyntaxKind::EqualsToken, "EqualsToken"},
@@ -275,14 +279,23 @@ namespace VSharp::Syntax
 		{SyntaxKind::ColonToken, "ColonToken"},
 		{SyntaxKind::SemicolonToken, "SemicolonToken"},
 
-		{SyntaxKind::ClassKeyword, "class"},
-		{SyntaxKind::StructKeyword, "struct"},
+		{SyntaxKind::TypeOfKeyword, "TypeOfKeyword"},
+		{SyntaxKind::NameOfKeyword, "NameOfKeyword"},
+		{SyntaxKind::SizeOfKeyword, "SizeOfKeyword"},
+		{SyntaxKind::NewKeyword, "NewKeyword"},
+
+		{SyntaxKind::ClassKeyword, "ClassKeyword"},
+		{SyntaxKind::StructKeyword, "StructKeyword"},
+
 		{SyntaxKind::NilKeyword, "NilKeyword"},
+
 		{SyntaxKind::TrueKeyword, "TrueKeyword"},
 		{SyntaxKind::FalseKeyword, "FalseKeyword"},
+
 		{SyntaxKind::StringKeyword, "StringKeyword"},
 		{SyntaxKind::CharKeyword, "CharKeyword"},
 		{SyntaxKind::BoolKeyword, "BoolKeyword"},
+
 		{SyntaxKind::Int8Keyword, "Int8Keyword"},
 		{SyntaxKind::UInt8Keyword, "UInt8Keyword"},
 		{SyntaxKind::Int16Keyword, "Int16Keyword"},
@@ -291,6 +304,8 @@ namespace VSharp::Syntax
 		{SyntaxKind::UInt32Keyword, "UInt32Keyword"},
 		{SyntaxKind::Int64Keyword, "Int64Keyword"},
 		{SyntaxKind::UInt64Keyword, "UInt64Keyword"},
+		{SyntaxKind::Float32Keyword, "Float32Keyword"},
+		{SyntaxKind::Float64Keyword, "Float64Keyword"},
 
 		{SyntaxKind::IdentifierToken, "IdentifierToken"},
 		{SyntaxKind::StringLiteralToken, "StringLiteralToken"},

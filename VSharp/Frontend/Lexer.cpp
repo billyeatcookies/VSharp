@@ -294,38 +294,95 @@ namespace VSharp::Frontend
 			case '\'':
 				ScanStringOrCharLiteral();
 				break;
+			case ' ':
+			case '\r':
+			case '\n':
+			case '\t':
+				ScanWhiteSpaces();
+				break;
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+				ScanNumericLiteral();
+				break;
+			case 'a':
+			case 'b':
+			case 'c':
+			case 'd':
+			case 'e':
+			case 'f':
+			case 'g':
+			case 'h':
+			case 'i':
+			case 'j':
+			case 'k':
+			case 'l':
+			case 'm':
+			case 'n':
+			case 'o':
+			case 'p':
+			case 'q':
+			case 'r':
+			case 's':
+			case 't':
+			case 'u':
+			case 'v':
+			case 'w':
+			case 'x':
+			case 'y':
+			case 'z':
+			case 'A':
+			case 'B':
+			case 'C':
+			case 'D':
+			case 'E':
+			case 'F':
+			case 'G':
+			case 'H':
+			case 'I':
+			case 'J':
+			case 'K':
+			case 'L':
+			case 'M':
+			case 'N':
+			case 'O':
+			case 'P':
+			case 'Q':
+			case 'R':
+			case 'S':
+			case 'T':
+			case 'U':
+			case 'V':
+			case 'W':
+			case 'X':
+			case 'Y':
+			case 'Z':
+			case '_':
+				ScanIdentifierOrKeyword();
+				break;
 			default:
-				if (Utilities::IsWhiteSpace(Current()))
-				{
-					ScanWhiteSpaces();
-				}
-				if (Utilities::IsDigit(Current()))
-				{
-					ScanNumericLiteral();
-				}
-				// check if it's valid a-z, A-Z or contains an underscore _
-				if (Utilities::IsAlpha(Current()))
-				{
-					ScanIdentifierOrKeyword();
-				}
-
 				// We've clearly entered a token that isn't handled
-				std::cerr << "unexpected token '" << Current() << "'" << std::endl;
-				_text = Current();
+				std::cerr << "unexpected token '" << Current() << "': " << _position << std::endl;
 				Advance();
 				break;
 		}
 
-		_text = GetFullTokenText();
-		return Syntax::SyntaxToken(_kind, _position, _text.c_str(), _value);
+		const Types::Char8* text = GetFullTokenText();
+		return Syntax::SyntaxToken(_kind, _position, text, _value);
 	}
 
 	const Types::Char8* Lexer::GetFullTokenText() const
 	{
 
-		const unsigned int length = _position - _start;
-		const Types::Char8* text = Utilities::Substring(Source, _start, length);
-		return text;
+		const Types::UInt64 length = _position - _start;
+		return Utilities::Substring(Source, _start, length); // Source.substr(_start, length);
 	}
 
 	Types::Char8 Lexer::Peek(const Types::Int64 offset) const
@@ -352,7 +409,105 @@ namespace VSharp::Frontend
 	// TODO: Fully support floats, and assign correct types
 	void Lexer::ScanNumericLiteral()
 	{
-		while (Utilities::IsDigit(Current()))
+		bool hasSeparator = false;
+		bool hasDecimal = false;
+		bool hasMultipleDecimals = false;
+
+		while (Utilities::IsDigit(Current()) ||
+			   Current() == '_' && Utilities::IsDigit(Next()) ||
+			   Current() == '.' && Utilities::IsDigit(Next()))
+		{
+			if (!hasSeparator && Current() == '_')
+			{
+				hasSeparator = true;
+			}
+
+			if (Current() == '.')
+			{
+				if (hasDecimal)
+				{
+					hasMultipleDecimals = true;
+				}
+				hasDecimal = true;
+			}
+
+			Advance();
+		}
+
+		const Types::UInt64 length = _position - _start;
+		const Types::Char8* text = Utilities::Substring(Source, _start, length);
+
+		if (text[0] == '_')
+		{
+			std::cerr << "invalid number";
+			return;
+		}
+
+		if (hasMultipleDecimals)
+		{
+			std::cerr << "invalid number";
+			return;
+		}
+
+		if (hasDecimal)
+		{
+			Types::Float64 value;
+			try
+			{
+				value = strtod(text, nullptr);
+			}
+			catch (...)
+			{
+				std::cerr << "invalid number";
+				return;
+			}
+			if (value >= Types::Float32Min && value <= Types::Float32Max)
+			{
+				_value = static_cast<Types::Float32>(value);
+				_kind = Syntax::SyntaxKind::Float32LiteralToken;
+			}
+			else if (value >= Types::Float64Min && value <= Types::Float64Max)
+			{
+				_value = value;
+				_kind = Syntax::SyntaxKind::Float64LiteralToken;
+			}
+		}
+		else
+		{
+			Types::UInt64 value;
+			try
+			{
+				value = std::stoull(text);
+			}
+			catch (...)
+			{
+				std::cerr << "invalid number";
+				return;
+			}
+			if (value <= Types::Int32Max)
+			{
+				_kind = Syntax::SyntaxKind::Int32LiteralToken;
+				_value = static_cast<Types::Int32>(value);
+			}
+			else if (value <= Types::UInt32Max)
+			{
+				_kind = Syntax::SyntaxKind::UInt32LiteralToken;
+				_value = static_cast<Types::UInt32>(value);
+			}
+			else if (value <= Types::Int64Max)
+			{
+				_kind = Syntax::SyntaxKind::Int64LiteralToken;
+				_value = static_cast<Types::Int64>(value);
+			}
+			// this could be a regular "else" statement, but I think it's better to explicitly state intention
+			else if (value <= Types::UInt64Max)
+			{
+				_kind = Syntax::SyntaxKind::UInt64LiteralToken;
+				_value = value;
+			}
+		}
+
+		/*while (Utilities::IsDigit(Current()))
 		{
 			Advance();
 		}
@@ -366,9 +521,10 @@ namespace VSharp::Frontend
 			}
 		}
 
-		_text = GetFullTokenText();
-		_value = atof(_text.c_str()); // this parses to double
+		const Types::Char8* text = GetFullTokenText();
+		_value = strtod(text, nullptr);
 		_kind = Syntax::SyntaxKind::Float64LiteralToken;
+		*/
 	}
 
 	// TODO: Support escapes
@@ -430,7 +586,6 @@ namespace VSharp::Frontend
 				}
 			}
 
-			_text = buffer[0];
 			_value = buffer[0];
 		}
 	}
@@ -443,10 +598,9 @@ namespace VSharp::Frontend
 		}
 
 		const Types::UInt64 length = _position - _start;
-		_text = Utilities::Substring(Source, _start, length);
-
+		const Types::Char8* text = Utilities::Substring(Source, _start, length);
 		// Will either be a reserved keyword or IdentifierToken for user defined tokens
-		_kind = Syntax::LookupKeyword(_text.c_str());
+		_kind = Syntax::LookupKeyword(text);
 	}
 
 	Types::Char8 Lexer::Advance()

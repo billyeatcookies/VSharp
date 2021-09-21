@@ -3,20 +3,16 @@
 #include <filesystem>
 #include <fstream>
 #include "Types.hpp"
+#include <tuple>
 
 namespace VSharp::Utilities
 {
-	[[nodiscard]] static bool FileExists(const Types::Char8* filepath)
+	[[nodiscard]] static const Types::Char8* Substring(const Types::Char8* input, const Types::UInt64 start, const Types::UInt64 length)
 	{
-		return std::filesystem::exists(filepath);
-	}
-
-	[[nodiscard]] static const Types::Char8* Substring(const Types::Char8* arr, const Types::UInt64 start, const Types::UInt64 length)
-	{
-		Types::Char8* buffer = new Types::Char8[length + 1];
+		Types::Char8* buffer = new Types::Char8[static_cast<Types::UInt32>(length + 1ui64)];
 		for (Types::UInt64 i = 0; i < length; i++)
 		{
-			buffer[i] = *(arr + start + i);
+			buffer[i] = *(input + start + i);
 		}
 
 		buffer[length] = 0;
@@ -27,19 +23,23 @@ namespace VSharp::Utilities
 	{
 		return Substring(input.c_str(), 0, input.length());
 	}
+	
+	[[nodiscard]] static bool FileExists(const Types::Char8* filepath)
+	{
+		return std::filesystem::exists(filepath);
+	}
 
 	[[nodiscard]] static const Types::Char8* LoadFile(const Types::Char8* filepath)
 	{
 		if (!FileExists(filepath))
 		{
 			std::cerr << "error: unable to locate file: " << filepath << std::endl;
-			return nullptr;
+			return "";
 		}
 
 		std::ifstream bufferStream(filepath);
-
-		const std::string str = std::string(std::istreambuf_iterator<Types::Char8>(bufferStream), std::istreambuf_iterator<Types::Char8>());
-		return ToCharPtr(str);
+		const std::string text = std::string(std::istreambuf_iterator<Types::Char8>(bufferStream), std::istreambuf_iterator<Types::Char8>());
+		return ToCharPtr(text);
 	}
 
 	[[nodiscard]] static bool IsWhiteSpace(const Types::Char8& ch)

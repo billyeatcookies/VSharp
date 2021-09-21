@@ -14,20 +14,11 @@ namespace VSharp::Frontend
 			Types::UInt64 _position;
 			Syntax::SyntaxKind _kind;
 			// need to use string since we'll be initializing during the lexing, and not at assignment
-			std::string _text; 
 			std::any _value;
 
 		public:
 			explicit Lexer(const Types::Char8* source) :
 				_start(0), _position(0), _kind(Syntax::SyntaxKind::BadToken), _value(nullptr), Source(source) {}
-			
-			Lexer() = default;
-
-			~Lexer()
-			{
-				delete Source;
-				delete GetFullTokenText();
-			}
 
 		public:
 			const Types::Char8* Source;
