@@ -460,10 +460,12 @@ namespace VSharp::Frontend
 			return;
 		}
 
-		if (hasDecimal || Current() == 'F')
+		// Floats are parsed separately instead of cast due to floating point precision.
+		if (hasDecimal || Current() == 'F' || Current() == 'f')
 		{
 			// Validate float
-			if (Current() == 'F' && Next() == '3')
+			if ((Current() == 'F' && Next() == '3') || 
+				(Current() == 'f' && Next() == '3'))
 			{
 				Advance();
 				Advance();
@@ -480,7 +482,8 @@ namespace VSharp::Frontend
 					_kind = Syntax::SyntaxKind::Float32LiteralToken;
 				}
 			}
-			else if (Current() == 'F' && Next() == '6')
+			else if ((Current() == 'F' && Next() == '6') ||
+					 (Current() == 'f' && Next() == '6'))
 			{
 				Advance();
 				Advance();
@@ -495,7 +498,6 @@ namespace VSharp::Frontend
 					}
 					_value = std::get<0>(result);
 					_kind = Syntax::SyntaxKind::Float64LiteralToken;
-
 				}
 			}
 			else
@@ -503,10 +505,12 @@ namespace VSharp::Frontend
 				ValidateDecimalLiteral(text);
 			}
 		}
-		else if (Current() == 'U' || Current() == 'I')
+		else if ((Current() == 'U' || Current() == 'I') ||
+				 (Current() == 'u' || Current() == 'i'))
 		{
 			// Unsigned integer suffixes "UI64" etc
-			if (Current() == 'U' && Next() == 'I')
+			if ((Current() == 'U' && Next() == 'I') ||
+				(Current() == 'u'&& Next() == 'i'))
 			{
 				const std::tuple<UInt64, bool> result = Utilities::TryParseUI64(text);
 				if (!std::get<1>(result))
@@ -549,7 +553,7 @@ namespace VSharp::Frontend
 				}
 			}
 			// Signed integer suffixes "I64" etc
-			else if (Current() == 'I')
+			else if (Current() == 'I' || Current() == 'i')
 			{
 				const std::tuple<Int64, bool> result = Utilities::TryParseI64(text);
 				if (!std::get<1>(result))
