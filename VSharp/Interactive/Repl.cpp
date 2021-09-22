@@ -41,11 +41,12 @@ namespace VSharp::Interactive
 					std::wcout << LookupMemberName(token.Kind) << std::endl;
 				}
 			}
-			catch (...)
+			catch (const std::exception& ex)
 			{
-				// tired of seeing crash messages so I just use this to stop it,
-				// and print so I at least know something went wrong
-				std::cout << "main threw an exception" << std::endl;
+				// Instead of naively catching (..), lets catch the base type,
+				// and at least see what went wrong so we don't lose the stack trace.
+				WriteColor("error: ", Colors::Red);
+				WriteColor(ex.what(), Colors::Red);
 			}
 		}
 
