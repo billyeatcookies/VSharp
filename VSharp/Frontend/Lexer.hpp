@@ -59,6 +59,8 @@ namespace VSharp::Frontend
 			// Advances 1 in the source text and returns the character the Lexer is currently sitting on after advancing
 			Char16 Advance();
 
+			[[nodiscard]] bool IsAtEnd() const { return _position >= Source.length(); }
+
 			// TODO: This method name doesn't properly explain what it does
 			// Gets a tokens full text, from _start to _position. If the token was Float32LiteralToken the full text might be "42.42",
 			// an identifier might be "foobar", but without the quotes obviously. This will also get a string/chars raw text. If a literal

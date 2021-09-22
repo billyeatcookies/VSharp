@@ -1,11 +1,14 @@
 #include <vector>
 #include <iostream>
+#include <cassert>
 
 #include "Lexer.hpp"
 #include "..\Utilities\Utils.hpp"
 #include "..\Syntax\SyntaxFacts.hpp"
 #include "..\Syntax\SyntaxKind.hpp"
 #include "..\Utilities\NumericParsing.hpp"
+
+// TODO: Once Lexer is completed, handle diagnostics/errors/warnings to catch static analysis issues.
 
 namespace VSharp::Frontend
 {
@@ -502,116 +505,88 @@ namespace VSharp::Frontend
 		}
 		else if (Current() == 'U' || Current() == 'I')
 		{
+			// Unsigned integer suffixes "UI64" etc
 			if (Current() == 'U' && Next() == 'I')
 			{
+				const std::tuple<UInt64, bool> result = Utilities::TryParseUI64(text);
+				if (!std::get<1>(result))
+				{
+					std::cerr << "invalid number" << std::endl;
+					return;
+				}
+
+				const UInt64 value = std::get<0>(result);
+
 				Advance();
 				Advance();
 				if (Current() == '8')
 				{
 					Advance();
-					const std::tuple<UInt8, bool> result = Utilities::TryParseUI8(text);
-					if (!std::get<1>(result))
-					{
-						std::cerr << "invalid number" << std::endl;
-						return;
-					}
-					_value = std::get<0>(result);
+					
+					_value = static_cast<UInt8>(value);
 					_kind = Syntax::SyntaxKind::UInt8LiteralToken;
 				}
 				else if (Current() == '1' && Next() == '6')
 				{
 					Advance();
 					Advance();
-					const std::tuple<UInt16, bool> result = Utilities::TryParseUI16(text);
-					if (!std::get<1>(result))
-					{
-						std::cerr << "invalid number" << std::endl;
-						return;
-					}
-					_value = std::get<0>(result);
+					_value = static_cast<UInt16>(value);
 					_kind = Syntax::SyntaxKind::UInt16LiteralToken;
 				}
 				else if (Current() == '3' && Next() == '2')
 				{
 					Advance();
 					Advance();
-					const std::tuple<UInt32, bool> result = Utilities::TryParseUI32(text);
-					if (!std::get<1>(result))
-					{
-						std::cerr << "invalid number" << std::endl;
-						return;
-					}
-					_value = std::get<0>(result);
+					_value = static_cast<UInt32>(value);
 					_kind = Syntax::SyntaxKind::UInt32LiteralToken;
 				}
 				else if (Current() == '6' && Next() == '4')
 				{
 					Advance();
 					Advance();
-					const std::tuple<UInt64, bool> result = Utilities::TryParseUI64(text);
-					if (!std::get<1>(result))
-					{
-						std::cerr << "invalid number" << std::endl;
-						return;
-					}
-					_value = std::get<0>(result);
+					_value = static_cast<UInt64>(value);
 					_kind = Syntax::SyntaxKind::UInt64LiteralToken;
 				}
 			}
+			// Signed integer suffixes "I64" etc
 			else if (Current() == 'I')
 			{
-				
+				const std::tuple<Int64, bool> result = Utilities::TryParseI64(text);
+				if (!std::get<1>(result))
+				{
+					std::cerr << "invalid number" << std::endl;
+					return;
+				}
+
+				const UInt64 value = std::get<0>(result);
 
 				Advance();
 				if (Current() == '8')
 				{
 					Advance();
-					const std::tuple<Int8, bool> result = Utilities::TryParseI8(text);
-					if (!std::get<1>(result))
-					{
-						std::cerr << "invalid number" << std::endl;
-						return;
-					}
-					_value = std::get<0>(result);
+					_value = static_cast<Int8>(value);
 					_kind = Syntax::SyntaxKind::Int8LiteralToken;
 				}
 				else if (Current() == '1' && Next() == '6')
 				{
 					Advance();
 					Advance();
-					const std::tuple<Int16, bool> result = Utilities::TryParseI16(text);
-					if (!std::get<1>(result))
-					{
-						std::cerr << "invalid number" << std::endl;
-						return;
-					}
-					_value = std::get<0>(result);
+					_value = static_cast<Int16>(value);
 					_kind = Syntax::SyntaxKind::Int16LiteralToken;
 				}
 				else if (Current() == '3' && Next() == '2')
 				{
 					Advance();
 					Advance();
-					const std::tuple<Int32, bool> result = Utilities::TryParseI32(text);
-					if (!std::get<1>(result))
-					{
-						std::cerr << "invalid number" << std::endl;
-						return;
-					}
-					_value = std::get<0>(result);
+					_value = static_cast<Int32>(value);
 					_kind = Syntax::SyntaxKind::Int32LiteralToken;
 				}
 				else if (Current() == '6' && Next() == '4')
 				{
 					Advance();
 					Advance();
-					const std::tuple<Int64, bool> result = Utilities::TryParseI64(text);
-					if (!std::get<1>(result))
-					{
-						std::cerr << "invalid number" << std::endl;
-						return;
-					}
-					_value = std::get<0>(result);
+					
+					_value = static_cast<UInt64>(value);
 					_kind = Syntax::SyntaxKind::Int64LiteralToken;
 				}
 			}
@@ -681,6 +656,7 @@ namespace VSharp::Frontend
 	void Lexer::ScanStringOrCharLiteral()
 	{
 		const Char16 quoteChar = Current();
+		assert(quoteChar == '\'' || quoteChar == '"');
 		Advance();
 
 		std::wstring buffer;
