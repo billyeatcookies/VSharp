@@ -60,12 +60,7 @@ namespace VSharp::Types
 	using Char8 = char; 
 	// This is as close as it gets to representing a .NET char type
 	// 0 to 65535
-	using Char16 = unsigned short int; 
+	using Char16 = wchar_t; // this isn't necessarily guaranteed to be 16, it could also be 32 depending on platform..
 	// similarly known as Rune, at least I think so. Not entirely sure how C++ char types work yet.
 	using Char32 = char32_t;
-
-	// Narrowing conversion warnings
-	static constexpr Char8 Char8MaxValue = static_cast<Char8>(0xff);
-	static constexpr Char16 Char16MaxValue = static_cast<Char16>(0xFFFF);
-	static constexpr Char32 Char32MaxValue = 0x7fffffff; // already int32 max
 }

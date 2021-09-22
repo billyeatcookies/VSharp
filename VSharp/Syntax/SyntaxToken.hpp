@@ -8,15 +8,15 @@ namespace VSharp::Syntax
 	class SyntaxToken
 	{
 		public:
-			SyntaxToken(const SyntaxKind kind, const Types::UInt64 position, const Types::Char8* text, std::any value) :
-				Kind(kind), Position(position), Text(text), Value(std::move(value)) {}
+			SyntaxToken(const SyntaxKind kind, const Types::UInt64 position, std::wstring text, std::any value) :
+				Kind(kind), Position(position), Text(std::move(text)), Value(std::move(value)) {}
 			
-			SyntaxToken() : Kind(SyntaxKind::BadToken), Position(0), Text(nullptr), Value(nullptr) {}
+			SyntaxToken() : Kind(SyntaxKind::BadToken), Position(0), Text(), Value(nullptr) {}
 
 		public:
 			SyntaxKind Kind;
 			Types::UInt64 Position;
-			const Types::Char8* Text;
+			std::wstring Text;
 			std::any Value;
 	};
 }

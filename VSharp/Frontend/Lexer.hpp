@@ -32,38 +32,38 @@ namespace VSharp::Frontend
 
 		public:
 			// Creates a new Lexer from a source text input, this will be from a REPL or file, the Lexer doesn't care where it's from
-			explicit Lexer(const Char8* source) :
-				_start(0), _position(0), _kind(Syntax::SyntaxKind::BadToken), _value(nullptr), Source(source) {}
+			explicit Lexer(std::wstring source) :
+				_start(0), _position(0), _kind(Syntax::SyntaxKind::BadToken), _value(nullptr), Source(std::move(source)) {}
 
 		public:
 			// The source text to keep track of during the Lexer phase, this is used for Peeking the current character and validating lexemes
-			const Char8* Source;
-			[[nodiscard]] static constexpr Char8 InvalidChar() { return -1; }
+			const std::wstring Source;
+			[[nodiscard]] static constexpr Char16 InvalidChar() { return -1; }
 
 			// The current character the lexer is examining, decimals, numbers, identifiers, etc...
-			[[nodiscard]] Char8 Current() const { return Peek(0); }
+			[[nodiscard]] Char16 Current() const { return Peek(0); }
 			// The next token in line for the Lexer, this always points 1 position AHEAD of Current()
-			[[nodiscard]] Char8 Next() const { return Peek(1); }
+			[[nodiscard]] Char16 Next() const { return Peek(1); }
 
 		public:
 			// TODO: We need a better method for also collecting diagnostics/errors/warnings when we get the tokens for parse phase
 			// This method will collect all valid tokens and return a list of them, regardless of errors, attempting to emit as many
 			// valid syntax errors as possible, while avoiding cascading errors.
-			[[nodiscard]] static std::vector<Syntax::SyntaxToken> CollectTokens(const Char8* source);
+			[[nodiscard]] static std::vector<Syntax::SyntaxToken> CollectTokens(const std::wstring& source);
 
 		private:
 			// Checks X characters ahead/behind in the Lexer, offset isn't Types::UInt64 because sometimes we'll use Peek(-1)
 			// to check a character behind us, an unsigned int would error out. 
-			[[nodiscard]] Char8 Peek(const Int64 offset = 0) const; // offset is signed because sometimes we'll need to peek backwards
+			[[nodiscard]] Char16 Peek(const Int32 offset = 0) const; // offset is signed because sometimes we'll need to peek backwards
 
 			// Advances 1 in the source text and returns the character the Lexer is currently sitting on after advancing
-			Char8 Advance();
+			Char16 Advance();
 
 			// TODO: This method name doesn't properly explain what it does
 			// Gets a tokens full text, from _start to _position. If the token was Float32LiteralToken the full text might be "42.42",
 			// an identifier might be "foobar", but without the quotes obviously. This will also get a string/chars raw text. If a literal
 			// string was `"hello world"` it would return `hello world`. This always ensures a tokens true value.
-			[[nodiscard]] const Char8* GetFullTokenText() const;
+			[[nodiscard]] std::wstring GetFullTokenText() const;
 
 			// These smaller incremental scanners prefix with "Scan" because they aren't full blow Lexers, but rather "scan" a select window of text
 

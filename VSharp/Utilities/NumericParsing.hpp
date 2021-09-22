@@ -1,22 +1,35 @@
 #pragma once
 #include <tuple>
+#include <string>
 #include "Types.hpp"
 
 namespace VSharp::Utilities
 {
-	static std::tuple<Types::Int64, bool> TryParseI64(const Types::Char8* value)
+	using namespace Types;
+
+	static std::string WToString(const std::wstring& input)
 	{
-		if (std::strlen(value) == 0)
+		std::string str;
+		std::ranges::transform(input, std::back_inserter(str), [](const Char16 c)
+		{
+			return static_cast<Char8>(c);
+		});
+		return str;
+	}
+
+	static std::tuple<Int64, bool> TryParseI64(const std::wstring& value)
+	{
+		if (value.length() == 0)
 		{
 			return std::make_tuple(0, false);
 		}
 
 		bool isNeg = false;
-		Types::Int64 result = 0;
+		Int64 result = 0;
 
-		for (Types::UInt32 i = 0; i < std::strlen(value); i++)
+		for (UInt32 i = 0; i < value.length(); i++)
 		{
-			const Types::Char8 ch = value[i];
+			const Char16 ch = value[i];
 			if (i == 0 && ch == '-')
 			{
 				isNeg = true;
@@ -40,17 +53,17 @@ namespace VSharp::Utilities
 		return std::make_tuple(isNeg ? -result : result, true);
 	}
 
-	static std::tuple<Types::UInt64, bool> TryParseUI64(const Types::Char8* value)
+	static std::tuple<UInt64, bool> TryParseUI64(const std::wstring& value)
 	{
-		if (std::strlen(value) == 0)
+		if (value.length() == 0)
 		{
 			return std::make_tuple(0, false);
 		}
 
-		Types::UInt64 result = 0;
-		for (Types::UInt64 i = 0; i < std::strlen(value); i++)
+		UInt64 result = 0;
+		for (UInt32 i = 0; i < value.length(); i++)
 		{
-			const Types::Char8 c = value[i];
+			const Char16 c = value[i];
 			if ((i == 0) && (c == '-'))
 			{
 				return std::make_tuple(0, false);
@@ -58,7 +71,7 @@ namespace VSharp::Utilities
 			if ((c >= '0') && (c <= '9'))
 			{
 				result *= 10;
-				result += static_cast<Types::UInt64>(c - '0');
+				result += static_cast<UInt64>(c - '0');
 			}
 			else
 			{
@@ -68,19 +81,19 @@ namespace VSharp::Utilities
 		return std::make_tuple(result, true);
 	}
 
-	static std::tuple<Types::Int32, bool> TryParseI32(const Types::Char8* value)
+	static std::tuple<Int32, bool> TryParseI32(const std::wstring& value)
 	{
-		if (std::strlen(value))
+		if (value.length() == 0)
 		{
 			return std::make_tuple(0, false);
 		}
 
 		bool isNeg = false;
-		Types::Int32 result = 0;
+		Int32 result = 0;
 
-		for (Types::UInt32 i = 0; i < std::strlen(value); i++)
+		for (UInt32 i = 0; i < value.length(); i++)
 		{
-			const Types::Char8 ch = value[i];
+			const Char16 ch = value[i];
 			if (i == 0 && ch == '-')
 			{
 				isNeg = true;
@@ -104,17 +117,17 @@ namespace VSharp::Utilities
 		return std::make_tuple(isNeg ? -result : result, true);
 	}
 
-	static std::tuple<Types::UInt32, bool> TryParseUI32(const Types::Char8* value)
+	static std::tuple<UInt32, bool> TryParseUI32(const std::wstring& value)
 	{
-		if (std::strlen(value) == 0)
+		if (value.length() == 0)
 		{
 			return std::make_tuple(0, false);
 		}
 
-		Types::UInt32 result = 0;
-		for (Types::UInt32 i = 0; i < std::strlen(value); i++)
+		UInt32 result = 0;
+		for (UInt32 i = 0; i < value.length(); i++)
 		{
-			const Types::Char8 ch = value[i];
+			const Char16 ch = value[i];
 			if (i == 0 && ch == '-')
 			{
 				return std::make_tuple(0, false);
@@ -122,7 +135,7 @@ namespace VSharp::Utilities
 			if (ch >= '0' && ch <= '9')
 			{
 				result *= 10;
-				result += static_cast<Types::UInt32>(ch - '0');
+				result += static_cast<UInt32>(ch - '0');
 			}
 			else
 			{
@@ -132,23 +145,195 @@ namespace VSharp::Utilities
 		return std::make_tuple(result, false);
 	}
 
-	static std::tuple<Types::Int16, bool> TryParseI16(const Types::Char8* value)
+	static std::tuple<Int16, bool> TryParseI16(const std::wstring& value)
 	{
 		return TryParseI32(value);
 	}
 
-	static std::tuple<Types::UInt16, bool> TryParseUI16(const Types::Char8* value)
+	static std::tuple<UInt16, bool> TryParseUI16(const std::wstring& value)
 	{
 		return TryParseUI32(value);
 	}
 
-	static std::tuple<Types::Int8, bool> TryParseI8(const Types::Char8* value)
+	static std::tuple<Int8, bool> TryParseI8(const std::wstring& value)
 	{
 		return TryParseI16(value);
 	}
 
-	static std::tuple<Types::UInt8, bool> TryParseUI8(const Types::Char8* value)
+	static std::tuple<UInt8, bool> TryParseUI8(const std::wstring& value)
 	{
 		return TryParseUI16(value);
+	}
+
+	static std::tuple<Float32, bool> TryParseF32(const std::wstring& value)
+	{
+		bool isNeg = false;
+		Float64 result = 0;
+		Float64 decimalMultiplier = 0;
+
+		for (UInt32 i = 0; i < value.length(); i++)
+		{
+			const Char16 ch = value[i];
+
+			if ((ch == 'e') || (ch == 'E'))
+			{
+				if (i == value.length() - 1)
+				{
+					return std::make_tuple(0, false);
+				}
+
+				const std::tuple<Float64, bool> pResult = TryParseI32(value.substr(i + 1));
+				if (!std::get<1>(pResult))
+				{
+					return std::make_tuple(0, false);
+				}
+
+				result *= pow(10, std::get<0>(pResult));
+				break;
+			}
+			if (ch == '.')
+			{
+				if (decimalMultiplier != 0)
+				{
+					return std::make_tuple(0, false);
+				}
+
+				decimalMultiplier = 0.1;
+				continue;
+			}
+			if (decimalMultiplier != 0)
+			{
+				if ((ch >= '0') && (ch <= '9'))
+				{
+					result += (ch - '0') * decimalMultiplier;
+					decimalMultiplier *= 0.1;
+				}
+				else
+				{
+					return std::make_tuple(0, false);
+				}
+			}
+			if ((i == 0) && (ch == '-'))
+			{
+				isNeg = true;
+				continue;
+			}
+			if ((ch >= '0') && (ch <= '9'))
+			{
+				result *= 10;
+				result += ch - '0';
+			}
+			else
+			{
+				return std::make_tuple(0, false);
+			}
+		}
+		return std::make_tuple(isNeg ? static_cast<Float32>(-result) : static_cast<Float32>(result), true);
+	}
+
+	static Float64 ParseFloat64(std::wstring wstr, Char8** ptr = nullptr)
+	{
+		std::string str = WToString(wstr);
+		if (ptr == static_cast<Char8**>(nullptr))
+		{
+			return atof(str.c_str());
+		}
+
+		Char8* p = str.data();
+
+		while (IsWhiteSpace(*p))
+		{
+			++p;
+		}
+
+		if (*p == '+' || *p == '-')
+		{
+			++p;
+		}
+
+		// INF or INFINITY. 
+		if ((p[0] == 'i' || p[0] == 'I')
+		 && (p[1] == 'n' || p[1] == 'N')
+		 && (p[2] == 'f' || p[2] == 'F'))
+		{
+			if ((p[3] == 'i' || p[3] == 'I')
+			 && (p[4] == 'n' || p[4] == 'N')
+			 && (p[5] == 'i' || p[5] == 'I')
+			 && (p[6] == 't' || p[6] == 'T')
+			 && (p[7] == 'y' || p[7] == 'Y'))
+			{
+				*ptr = p + 8;
+				return atof(str.data());
+			}
+
+			*ptr = p + 3;
+			return atof(str.data());
+		}
+		// NAN or NAN(foo).
+		if ((p[0] == 'n' || p[0] == 'N')
+		 && (p[1] == 'a' || p[1] == 'A')
+		 && (p[2] == 'n' || p[2] == 'N'))
+		{
+			p += 3;
+			if (*p == '(')
+			{
+				++p;
+				while (*p != '\0' && *p != ')')
+				{
+					++p;
+				}
+				if (*p == ')')
+				{
+					++p;
+				}
+			}
+			*ptr = p;
+			return atof(str.data());
+		}
+		// digits, with 0 or 1 periods in it. 
+		if (IsDigit(*p) || *p == '.')
+		{
+			bool hasDecimal = false;
+			while (IsDigit(*p) || (!hasDecimal && *p == '.'))
+			{
+				if (*p == '.')
+				{
+					hasDecimal = true;
+				}
+				++p;
+			}
+
+			// Exponent.  
+			if (*p == 'e' || *p == 'E')
+			{
+				Int32 i = 1;
+				if (p[i] == '+' || p[i] == '-')
+				{
+					++i;
+				}
+				if (IsDigit(p[i]))
+				{
+					while (IsDigit(p[i]))
+					{
+						++i;
+					}
+
+					*ptr = p + i;
+					return atof(str.data());
+				}
+			}
+
+			*ptr = p;
+			return atof(str.data());
+		}
+
+		// Didn't find any digits. Doesn't look like a number. 
+		*ptr = str.data();
+		return 0.0;
+	}
+
+	static Float32 ParseFloat32(const std::wstring& input, Char8** ptr = nullptr)
+	{
+		return static_cast<Float32>(ParseFloat64(input, ptr));
 	}
 }

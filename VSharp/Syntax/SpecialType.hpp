@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 #include "Utilities\Types.hpp"
 
 // TODO: handling metadata
@@ -12,7 +13,7 @@ namespace VSharp::Syntax
     // Some of the naming conventions have been changed to match VSharps style
     // Anything commented out isn't being emitted currently
 
-    enum class SpecialType : char
+    enum class SpecialType : Types::Char16
     {
         None = 0,
         SystemObject = 1,
@@ -53,30 +54,30 @@ namespace VSharp::Syntax
         SystemDateTime = 33,*/
 	};
 
-    static std::vector<const Types::Char8*> EmittedNames
+    static std::vector<std::wstring> EmittedNames
     {
         // Ensure SpecialType enum is kept in sync with this vector
-    	nullptr, // SpecialType.None
-        "System.Object",
-        "System.Enum",
-       "System.ValueType",
-        "System.Void",
-        "System.Boolean",
-        "System.Char",
-        "System.SByte",
-        "System.Byte",
-        "System.Int16",
-        "System.UInt16",
-        "System.Int32",
-        "System.UInt32",
-        "System.Int64",
-        "System.UInt64",
-        "System.Decimal",
-        "System.Single",
-        "System.Double",
-        "System.String",
-        "System.IntPtr",
-        "System.UIntPtr",
-        "System.Array",
+    	L"", // SpecialType.None
+        L"System.Object",
+        L"System.Enum",
+		L"System.ValueType",
+        L"System.Void",
+        L"System.Boolean",
+        L"System.Char",
+        L"System.SByte",
+        L"System.Byte",
+        L"System.Int16",
+        L"System.UInt16",
+        L"System.Int32",
+        L"System.UInt32",
+        L"System.Int64",
+        L"System.UInt64",
+        L"System.Decimal",
+        L"System.Single",
+        L"System.Double",
+        L"System.String",
+        L"System.IntPtr",
+        L"System.UIntPtr",
+        L"System.Array",
     };
 }

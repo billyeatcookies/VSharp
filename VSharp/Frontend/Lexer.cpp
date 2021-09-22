@@ -4,10 +4,11 @@
 #include "Lexer.hpp"
 #include "..\Utilities\Utils.hpp"
 #include "..\Syntax\SyntaxFacts.hpp"
+#include "..\Utilities\NumericParsing.hpp"
 
 namespace VSharp::Frontend
 {
-	std::vector<Syntax::SyntaxToken> Lexer::CollectTokens(const Types::Char8* source)
+	std::vector<Syntax::SyntaxToken> Lexer::CollectTokens(const std::wstring& source)
 	{
 		Lexer lexer(source);
 		std::vector<Syntax::SyntaxToken> tokens{};
@@ -370,27 +371,27 @@ namespace VSharp::Frontend
 				break;
 			default:
 				// We've clearly entered a token that isn't handled
-				std::cerr << "unexpected token '" << Current() << "': " << _position << std::endl;
+				std::wcerr << L"unexpected token '" << Current() << L"': " << _position << std::endl;
 				Advance();
 				break;
 		}
 
-		const Types::Char8* text = GetFullTokenText();
+		const std::wstring text = GetFullTokenText();
 		return Syntax::SyntaxToken(_kind, _position, text, _value);
 	}
 
-	const Types::Char8* Lexer::GetFullTokenText() const
+	std::wstring Lexer::GetFullTokenText() const
 	{
-		const Types::UInt64 length = _position - _start;
-		return Utilities::Substring(Source, _start, length);
+		const UInt32 length = _position - _start;
+		return Source.substr(_start, length);
 	}
 
-	Types::Char8 Lexer::Peek(const Types::Int64 offset) const
+	Char16 Lexer::Peek(const Int32 offset) const
 	{
 		// the index should never be negative, but if we take a negative offset,
 		// it means we want to peek to previous characters 
-		const Types::UInt64 index = _position + offset;
-		if (index >= std::strlen(Source))
+		const UInt32 index = _position + offset;
+		if (index >= Source.length())
 		{
 			return InvalidChar();
 		}
@@ -440,8 +441,8 @@ namespace VSharp::Frontend
 			Advance();
 		}
 
-		const Types::UInt64 length = _position - _start;
-		const Types::Char8* text = Utilities::Substring(Source, _start, length);
+		const UInt32 length = _position - _start;
+		const std::wstring text = Source.substr(_start, length); //Utilities::Substring(, _start, length);
 
 		if (text[0] == '_')
 		{
@@ -457,22 +458,14 @@ namespace VSharp::Frontend
 
 		if (hasDecimal)
 		{
-			Types::Float64 value;
-			try
+			Float64 value = Utilities::ParseFloat64(text);
+
+			if (value >= Float32Min && value <= Float32Max)
 			{
-				value = strtod(text, nullptr);
-			}
-			catch (...)
-			{
-				std::cerr << "invalid number";
-				return;
-			}
-			if (value >= Types::Float32Min && value <= Types::Float32Max)
-			{
-				_value = static_cast<Types::Float32>(value);
+				_value = static_cast<Float32>(value);
 				_kind = Syntax::SyntaxKind::Float32LiteralToken;
 			}
-			else if (value >= Types::Float64Min && value <= Types::Float64Max)
+			else if (value >= Float64Min && value <= Float64Max)
 			{
 				_value = value;
 				_kind = Syntax::SyntaxKind::Float64LiteralToken;
@@ -480,7 +473,8 @@ namespace VSharp::Frontend
 		}
 		else
 		{
-			Types::UInt64 value;
+			UInt64 value;
+			std::tuple<UInt64, bool> result = Utilities::TryParseUI64(text);
 			try
 			{
 				value = std::stoull(text);
@@ -490,23 +484,23 @@ namespace VSharp::Frontend
 				std::cerr << "invalid number";
 				return;
 			}
-			if (value <= Types::Int32Max)
+			if (value <= Int32Max)
 			{
 				_kind = Syntax::SyntaxKind::Int32LiteralToken;
-				_value = static_cast<Types::Int32>(value);
+				_value = static_cast<Int32>(value);
 			}
-			else if (value <= Types::UInt32Max)
+			else if (value <= UInt32Max)
 			{
 				_kind = Syntax::SyntaxKind::UInt32LiteralToken;
-				_value = static_cast<Types::UInt32>(value);
+				_value = static_cast<UInt32>(value);
 			}
-			else if (value <= Types::Int64Max)
+			else if (value <= Int64Max)
 			{
 				_kind = Syntax::SyntaxKind::Int64LiteralToken;
-				_value = static_cast<Types::Int64>(value);
+				_value = static_cast<Int64>(value);
 			}
 			// this could be a regular "else" statement, but I think it's better to explicitly state intention
-			else if (value <= Types::UInt64Max)
+			else if (value <= UInt64Max)
 			{
 				_kind = Syntax::SyntaxKind::UInt64LiteralToken;
 				_value = value;
@@ -517,10 +511,10 @@ namespace VSharp::Frontend
 	// TODO: Support escapes
 	void Lexer::ScanStringOrCharLiteral()
 	{
-		const char quoteChar = Current();
+		const Char16 quoteChar = Current();
 		Advance();
 
-		std::string buffer;
+		std::wstring buffer;
 		bool done = false;
 		while (!done)
 		{
@@ -585,14 +579,15 @@ namespace VSharp::Frontend
 		}
 
 		const UInt32 length = _position - _start;
-		const Char8* text = Utilities::Substring(Source, _start, length);
+		//const Char8* text = Utilities::Substring(Source, _start, length);
+		const std::wstring text = Source.substr(_start, length);
 		// Will either be a reserved keyword or IdentifierToken for user defined tokens
 		_kind = Syntax::LookupKeyword(text);
 	}
 
-	Char8 Lexer::Advance()
+	Char16 Lexer::Advance()
 	{
-		if (_position == std::strlen(Source))
+		if (_position == Source.length())
 		{
 			return Source[_position];
 		}

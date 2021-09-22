@@ -7,10 +7,10 @@
 
 namespace VSharp::Syntax
 {
-	[[nodiscard]] static const Types::Char8* LookupMemberName(const SyntaxKind kind);
-	[[nodiscard]] static SyntaxKind LookupKeyword(const Types::Char8* input);
+	[[nodiscard]] static std::wstring LookupMemberName(const SyntaxKind kind);
+	[[nodiscard]] static SyntaxKind LookupKeyword(const std::wstring& input);
 
-	[[nodiscard]] static const Types::Char8* GetText(const SyntaxKind kind)
+	[[nodiscard]] static std::wstring GetText(const SyntaxKind kind)
 	{
 		// TODO: I'm not sure if I want this to also be an unordered_map yet since it's also sharing reserved keywords 
 		
@@ -21,150 +21,150 @@ namespace VSharp::Syntax
 		switch (kind)
 		{
 			case SyntaxKind::ColonToken:
-				return ":";
+				return L":";
 			case SyntaxKind::SemicolonToken:
-				return ";";
+				return L";";
 			case SyntaxKind::DotToken:
-				return ".";
+				return L".";
 			case SyntaxKind::CommaToken:
-				return ",";
+				return L",";
 			case SyntaxKind::OpenParenToken:
-				return "(";
+				return L"(";
 			case SyntaxKind::CloseParenToken:
-				return ")";
+				return L")";
 			case SyntaxKind::OpenBraceToken:
-				return "{";
+				return L"{";
 			case SyntaxKind::CloseBraceToken:
-				return "}";
+				return L"}";
 			case SyntaxKind::OpenBracketToken:
-				return "[";
+				return L"[";
 			case SyntaxKind::CloseBracketToken:
-				return "]";
+				return L"]";
 
 				// Unary operators
 			case SyntaxKind::PlusPlusToken:
-				return "++";
+				return L"++";
 			case SyntaxKind::MinusMinusToken:
-				return "--";
+				return L"--";
 			case SyntaxKind::BangToken:
-				return "!";
+				return L"!";
 			case SyntaxKind::TildeToken:
-				return "~";
+				return L"~";
 
 				// Binary operators
 			case SyntaxKind::PlusToken:
-				return "+";
+				return L"+";
 			case SyntaxKind::MinusToken:
-				return "-";
+				return L"-";
 			case SyntaxKind::AsteriskToken:
-				return "*";
+				return L"*";
 			case SyntaxKind::FSlashToken:
-				return "/";
+				return L"/";
 			case SyntaxKind::PercentToken:
-				return "%";
+				return L"%";
 			case SyntaxKind::CaretToken:
-				return "^";
+				return L"^";
 
 				// Conditional operators
 			case SyntaxKind::BangEqualsToken:
-				return "!=";
+				return L"!=";
 			case SyntaxKind::EqualsToken:
-				return "=";
+				return L"=";
 			case SyntaxKind::EqualsEqualsToken:
-				return "==";
+				return L"==";
 			case SyntaxKind::LessToken:
-				return "<";
+				return L"<";
 			case SyntaxKind::LessEqualsToken:
-				return "<=";
+				return L"<=";
 			case SyntaxKind::GreaterToken:
-				return ">";
+				return L">";
 			case SyntaxKind::GreaterEqualsToken:
-				return ">=";
+				return L">=";
 			case SyntaxKind::PipeToken:
-				return "|";
+				return L"|";
 			case SyntaxKind::PipePipeToken:
-				return "||";
+				return L"||";
 			case SyntaxKind::AmpersandToken:
-				return "&";
+				return L"&";
 			case SyntaxKind::AmpersandAmpersandToken:
-				return "&&";
+				return L"&&";
 			case SyntaxKind::QuestionMarkToken:
-				return "?";
+				return L"?";
 
 				// Shifts
 			case SyntaxKind::GreaterGreaterToken:
-				return ">>";
+				return L">>";
 			case SyntaxKind::LessLessToken:
-				return "<<";
+				return L"<<";
 
 				// Compound assignment
 			case SyntaxKind::PlusEqualsToken:
-				return "+=";
+				return L"+=";
 			case SyntaxKind::MinusEqualsToken:
-				return "-=";
+				return L"-=";
 			case SyntaxKind::AsteriskEqualsToken:
-				return "*=";
+				return L"*=";
 			case SyntaxKind::FSlashEqualsToken:
-				return "/=";
+				return L"/=";
 			case SyntaxKind::PercentEqualsToken:
-				return "%=";
+				return L"%=";
 			case SyntaxKind::AmpersandEqualsToken:
-				return "&=";
+				return L"&=";
 			case SyntaxKind::PipeEqualsToken:
-				return "|=";
+				return L"|=";
 			case SyntaxKind::LessLessEqualsToken:
-				return "<<=";
+				return L"<<=";
 			case SyntaxKind::GreaterGreaterEqualsToken:
-				return ">>=";
+				return L">>=";
 			case SyntaxKind::CaretEqualsToken:
-				return "^=";
+				return L"^=";
 			case SyntaxKind::TildeEqualsToken:
-				return "~=";
+				return L"~=";
 
 			// Compiler reserved keywords
 			case SyntaxKind::TypeOfKeyword:
-				return "typeof";
+				return L"typeof";
 			case SyntaxKind::NameOfKeyword:
-				return "nameof";
+				return L"nameof";
 			case SyntaxKind::SizeOfKeyword:
-				return "sizeof";
+				return L"sizeof";
 			case SyntaxKind::NewKeyword:
-				return "new";
+				return L"new";
 			case SyntaxKind::ClassKeyword:
-				return "class";
+				return L"class";
 			case SyntaxKind::StructKeyword:
-				return "struct";
+				return L"struct";
 
 			case SyntaxKind::Int8Keyword:
-				return "int8";
+				return L"int8";
 			case SyntaxKind::UInt8Keyword:
-				return "uint8";
+				return L"uint8";
 			case SyntaxKind::Int16Keyword:
-				return "int16";
+				return L"int16";
 			case SyntaxKind::UInt16Keyword:
-				return "uint16";
+				return L"uint16";
 			case SyntaxKind::Int32Keyword:
-				return "int32";
+				return L"int32";
 			case SyntaxKind::UInt32Keyword:
-				return "uint32";
+				return L"uint32";
 			case SyntaxKind::Int64Keyword:
-				return "int64";
+				return L"int64";
 			case SyntaxKind::UInt64Keyword:
-				return "uint64";
+				return L"uint64";
 
 			case SyntaxKind::StringKeyword:
-				return "string";
+				return L"string";
 			case SyntaxKind::CharKeyword:
-				return "char";
+				return L"char";
 			case SyntaxKind::BoolKeyword:
-				return "bool";
+				return L"bool";
 			case SyntaxKind::TrueKeyword:
-				return "true";
+				return L"true";
 			case SyntaxKind::FalseKeyword:
-				return "false";
+				return L"false";
 
 			case SyntaxKind::NilKeyword:
-				return "nil";
+				return L"nil";
 
 			// If the switch reaches default, that means we either have an invalid token, or a keyword 
 			default:
@@ -173,7 +173,7 @@ namespace VSharp::Syntax
 	}
 
 	// This should be self explanatory
-	[[nodiscard]] static SyntaxKind LookupKeyword(const Types::Char8* input)
+	[[nodiscard]] static SyntaxKind LookupKeyword(const std::wstring& input)
 	{
 		// I've been having issues getting (Keywords.find(input == Keywords.end()) for looking up
 		// keys in the map to work, and I'm not sure why it refuses to work reliably, so I'm just
@@ -187,7 +187,7 @@ namespace VSharp::Syntax
 		// but none of these SHOULD be the cause, since I've attempted printing out these values
 		for (const auto& [text, kind] : Keywords)
 		{
-			if (strcmp(text, input) == 0)
+			if (text == input)
 			{
 				return kind;
 			}
@@ -195,17 +195,16 @@ namespace VSharp::Syntax
 
 		return SyntaxKind::IdentifierToken;
 	}
-	
-	
+
 	// Attempt to locate locate a member from SyntaxKind, and return it's human readable name,
 	// since we can retrieve via reflection, we have to use an unordered_map<TKey, TValue>
-	[[nodiscard]] static const Types::Char8* LookupMemberName(const SyntaxKind kind)
+	[[nodiscard]] static std::wstring LookupMemberName(const SyntaxKind kind)
 	{
 		if (MemberNames.find(kind) == MemberNames.end())
 		{
 			// this method should never be called in a serious environment, so returning
 			// a "fake" token name will be a better indicator during debugging/testing.
-			return "InvalidTokenKind";
+			return L"InvalidTokenKind";
 		}
 
 		return MemberNames[kind];
