@@ -81,6 +81,9 @@ namespace VSharp::Frontend
 			// Handles any token that starts with [a-z], [A-Z], or [_]. An identifier may contain numbers, but only after the first character
 			void ScanIdentifierOrKeyword();
 
+			void ValidateDecimalLiteral(const std::wstring& text);
+			void ValidateIntegerLiteral(const std::wstring& text);
+
 			// The base tokenizer that starts the process. Basically a massive switch token that goes down all the valid characters
 			[[nodiscard]] Syntax::SyntaxToken ScanSyntaxToken();
 	};

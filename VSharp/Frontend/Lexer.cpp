@@ -4,6 +4,7 @@
 #include "Lexer.hpp"
 #include "..\Utilities\Utils.hpp"
 #include "..\Syntax\SyntaxFacts.hpp"
+#include "..\Syntax\SyntaxKind.hpp"
 #include "..\Utilities\NumericParsing.hpp"
 
 namespace VSharp::Frontend
@@ -442,7 +443,7 @@ namespace VSharp::Frontend
 		}
 
 		const UInt32 length = _position - _start;
-		const std::wstring text = Source.substr(_start, length); //Utilities::Substring(, _start, length);
+		const std::wstring text = Source.substr(_start, length);
 
 		if (text[0] == '_')
 		{
@@ -455,58 +456,171 @@ namespace VSharp::Frontend
 			std::cerr << "invalid number";
 			return;
 		}
-
 		if (hasDecimal)
 		{
-			Float64 value = Utilities::ParseFloat64(text);
-
-			if (value >= Float32Min && value <= Float32Max)
+			if (Current() == 'F' && Next() == '3')
 			{
-				_value = static_cast<Float32>(value);
-				_kind = Syntax::SyntaxKind::Float32LiteralToken;
+				Advance();
+				Advance();
+				if (Current() == '2')
+				{
+					Advance();
+					_value = static_cast<Float32>(Utilities::ParseFloat64(text));
+					_kind = Syntax::SyntaxKind::Float32LiteralToken;
+				}
 			}
-			else if (value >= Float64Min && value <= Float64Max)
+			else if (Current() == 'F' && Next() == '6')
 			{
-				_value = value;
-				_kind = Syntax::SyntaxKind::Float64LiteralToken;
+				Advance();
+				Advance();
+				if (Current() == '4')
+				{
+					Advance();
+					_value = Utilities::ParseFloat64(text);
+					_kind = Syntax::SyntaxKind::Float64LiteralToken;
+				}
+			}
+			else
+			{
+				ValidateDecimalLiteral(text);
 			}
 		}
 		else
 		{
-			UInt64 value;
-			std::tuple<UInt64, bool> result = Utilities::TryParseUI64(text);
-			try
+			if (Current() == 'U' && Next() == 'I')
 			{
-				value = std::stoull(text);
+				const std::tuple<UInt64, bool> result = Utilities::TryParseUI64(text);
+				if (!std::get<1>(result))
+				{
+					std::cerr << "invalid number" << std::endl;
+					return;
+				}
+				const UInt64 value = std::get<0>(result);
+
+				Advance();
+				Advance();
+				if (Current() == '8')
+				{
+					Advance();
+					_value = static_cast<UInt8>(value);
+					_kind = Syntax::SyntaxKind::UInt8LiteralToken;
+				}
+				else if (Current() == '1' && Next() == '6')
+				{
+					Advance();
+					Advance();
+					_value = static_cast<UInt16>(value);
+					_kind = Syntax::SyntaxKind::UInt16LiteralToken;
+				}
+				else if (Current() == '3' && Next() == '2')
+				{
+					Advance();
+					Advance();
+					_value = static_cast<UInt32>(value);
+					_kind = Syntax::SyntaxKind::UInt32LiteralToken;
+				}
+				else if (Current() == '6' && Next() == '4')
+				{
+					Advance();
+					Advance();
+					_value = value;
+					_kind = Syntax::SyntaxKind::UInt64LiteralToken;
+				}
 			}
-			catch (...)
+			else if (Current() == 'I')
 			{
-				std::cerr << "invalid number";
-				return;
+				const std::tuple<Int64, bool> result = Utilities::TryParseI64(text);
+				if (!std::get<1>(result))
+				{
+					std::cerr << "invalid number" << std::endl;
+					return;
+				}
+				const Int64 value = std::get<0>(result);
+
+				Advance();
+				if (Current() == '8')
+				{
+					Advance();
+					_value = static_cast<Int8>(value);
+					_kind = Syntax::SyntaxKind::Int8LiteralToken;
+				}
+				else if (Current() == '1' && Next() == '6')
+				{
+					Advance();
+					Advance();
+					_value = static_cast<Int16>(value);
+					_kind = Syntax::SyntaxKind::Int16LiteralToken;
+				}
+				else if (Current() == '3' && Next() == '2')
+				{
+					Advance();
+					Advance();
+					_value = static_cast<Int32>(value);
+					_kind = Syntax::SyntaxKind::Int32LiteralToken;
+				}
+				else if (Current() == '6' && Next() == '4')
+				{
+					Advance();
+					Advance();
+					_value = static_cast<UInt32>(value);
+					_kind = Syntax::SyntaxKind::Int64LiteralToken;
+				}
 			}
-			if (value <= Int32Max)
+			else
 			{
-				_kind = Syntax::SyntaxKind::Int32LiteralToken;
-				_value = static_cast<Int32>(value);
-			}
-			else if (value <= UInt32Max)
-			{
-				_kind = Syntax::SyntaxKind::UInt32LiteralToken;
-				_value = static_cast<UInt32>(value);
-			}
-			else if (value <= Int64Max)
-			{
-				_kind = Syntax::SyntaxKind::Int64LiteralToken;
-				_value = static_cast<Int64>(value);
-			}
-			// this could be a regular "else" statement, but I think it's better to explicitly state intention
-			else if (value <= UInt64Max)
-			{
-				_kind = Syntax::SyntaxKind::UInt64LiteralToken;
-				_value = value;
+				ValidateIntegerLiteral(text);
 			}
 		}
 	}
+
+	void Lexer::ValidateDecimalLiteral(const std::wstring& text)
+	{
+		const Float64 value = Utilities::ParseFloat64(text);
+		if (value >= static_cast<Float64>(Float32Min) && value <= static_cast<Float64>(Float32Max))
+		{
+			_value = static_cast<Float32>(value);
+			_kind = Syntax::SyntaxKind::Float32LiteralToken;
+		}
+		else if (value >= Float64Min && value <= Float64Max)
+		{
+			_value = value;
+			_kind = Syntax::SyntaxKind::Float64LiteralToken;
+		}
+	}
+
+	void Lexer::ValidateIntegerLiteral(const std::wstring& text)
+	{
+		const std::tuple<UInt64, bool> result = Utilities::TryParseUI64(text);
+		if (!std::get<1>(result))
+		{
+			std::cerr << "invalid number" << std::endl;
+			return;
+		}
+
+		const UInt64 value = std::get<0>(result);
+		if (value <= Int32Max)
+		{
+			_kind = Syntax::SyntaxKind::Int32LiteralToken;
+			_value = static_cast<Int32>(value);
+		}
+		else if (value <= UInt32Max)
+		{
+			_kind = Syntax::SyntaxKind::UInt32LiteralToken;
+			_value = static_cast<UInt32>(value);
+		}
+		else if (value <= Int64Max)
+		{
+			_kind = Syntax::SyntaxKind::Int64LiteralToken;
+			_value = static_cast<Int64>(value);
+		}
+		// this could be a regular "else" statement, but I think it's better to explicitly state intention
+		else if (value <= UInt64Max)
+		{
+			_kind = Syntax::SyntaxKind::UInt64LiteralToken;
+			_value = value;
+		}
+	}
+
 
 	// TODO: Support escapes
 	void Lexer::ScanStringOrCharLiteral()

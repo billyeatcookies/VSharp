@@ -96,14 +96,16 @@ namespace VSharp::Syntax
 		{SyntaxKind::UInt32Keyword, L"UInt32Keyword"},
 		{SyntaxKind::Int64Keyword, L"Int64Keyword"},
 		{SyntaxKind::UInt64Keyword, L"UInt64Keyword"},
+
 		{SyntaxKind::Float32Keyword, L"Float32Keyword"},
 		{SyntaxKind::Float64Keyword, L"Float64Keyword"},
 
 		{SyntaxKind::IdentifierToken, L"IdentifierToken"},
+
 		{SyntaxKind::StringLiteralToken, L"StringLiteralToken"},
 		{SyntaxKind::CharLiteralToken, L"CharLiteralToken"},
-
 		{SyntaxKind::BoolLiteralToken, L"BoolLiteralToken"},
+
 		{SyntaxKind::Int8LiteralToken, L"Int8LiteralToken"},
 		{SyntaxKind::UInt8LiteralToken, L"UInt8LiteralToken"},
 		{SyntaxKind::Int16LiteralToken, L"Int16LiteralToken"},
@@ -112,6 +114,7 @@ namespace VSharp::Syntax
 		{SyntaxKind::UInt32LiteralToken, L"UInt32LiteralToken"},
 		{SyntaxKind::Int64LiteralToken, L"Int64LiteralToken"},
 		{SyntaxKind::UInt64LiteralToken, L"UInt64LiteralToken"},
+
 		{SyntaxKind::Float32LiteralToken, L"Float32LiteralToken"},
 		{SyntaxKind::Float64LiteralToken, L"Float64LiteralToken"},
 	};

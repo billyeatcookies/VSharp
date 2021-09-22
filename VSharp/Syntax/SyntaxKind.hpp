@@ -9,6 +9,9 @@ namespace VSharp::Syntax
 	// | ensure that the corresponding maps and methods  |
 	// | are updated with this enum or things WILL fail  |
 	// | =============================================== |
+	// File(s) needing to be synced:
+	// SyntaxData.hpp
+
 	enum class SyntaxKind
 	{
 		BadToken,
@@ -81,15 +84,20 @@ namespace VSharp::Syntax
 		NameOfKeyword, // nameof
 		SizeOfKeyword, // sizeof
 		NewKeyword, // new
+
 		ClassKeyword, // class
 		StructKeyword, // struct
 		StaticKeyword, // static
+
+
 		NilKeyword, // nil
 		TrueKeyword, // true
 		FalseKeyword, // false
+
 		StringKeyword, // string
 		CharKeyword, // char
 		BoolKeyword, // bool 
+
 		Int8Keyword, // int8 
 		UInt8Keyword, // uint8 
 		Int16Keyword, // int16
@@ -98,6 +106,7 @@ namespace VSharp::Syntax
 		UInt32Keyword, // uint32 
 		Int64Keyword, // int64 
 		UInt64Keyword, // uint64
+
 		Float32Keyword, // float32
 		Float64Keyword, // float64 
 
@@ -114,6 +123,7 @@ namespace VSharp::Syntax
 		StringLiteralToken,
 		CharLiteralToken,
 		BoolLiteralToken,
+
 		Int8LiteralToken,
 		UInt8LiteralToken,
 		Int16LiteralToken,
@@ -122,6 +132,7 @@ namespace VSharp::Syntax
 		UInt32LiteralToken,
 		Int64LiteralToken,
 		UInt64LiteralToken,
+
 		Float32LiteralToken,
 		Float64LiteralToken,
 	};
