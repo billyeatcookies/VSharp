@@ -10,6 +10,8 @@ Types::Int32 ExecuteFile(const char* filepath);
 
 int main(int argc, char* argv[]) noexcept
 {
+	// std::cout << Syntax::LookupMemberName(Syntax::LookupKeyword("class"));
+
 	return ExecuteRepl();
 	/*if (argc == 0)
 	{

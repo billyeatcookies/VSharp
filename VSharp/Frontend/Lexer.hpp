@@ -7,16 +7,18 @@
 
 namespace VSharp::Frontend
 {
+	using namespace Types;
+
 	class Lexer
 	{
 		private:
 			// The start position of a "lexeme" or "token". If the Lexer was lexing "float32 foo = 42.0;",
 			// and the current token was "foo" the start position would be 9. 
-			Types::UInt64 _start;
+			UInt32 _start;
 
 			// The current position of the text the Lexer is at. If the Lexer was lexing "float32 foo = 42.0f;",
 			// and the lexer was at "foo"s first 'o', the position would be 10.  
-			Types::UInt64 _position;
+			UInt32 _position;
 
 			// The kind of the current token, Float32LiteralToken, Int32LiteralToken, etc. This is used for future reference
 			// during compilation/emission, we need to know which special type to emit.
@@ -30,38 +32,38 @@ namespace VSharp::Frontend
 
 		public:
 			// Creates a new Lexer from a source text input, this will be from a REPL or file, the Lexer doesn't care where it's from
-			explicit Lexer(const Types::Char8* source) :
+			explicit Lexer(const Char8* source) :
 				_start(0), _position(0), _kind(Syntax::SyntaxKind::BadToken), _value(nullptr), Source(source) {}
 
 		public:
 			// The source text to keep track of during the Lexer phase, this is used for Peeking the current character and validating lexemes
-			const Types::Char8* Source;
-			[[nodiscard]] static constexpr Types::Char8 InvalidChar() { return -1; }
+			const Char8* Source;
+			[[nodiscard]] static constexpr Char8 InvalidChar() { return -1; }
 
 			// The current character the lexer is examining, decimals, numbers, identifiers, etc...
-			[[nodiscard]] Types::Char8 Current() const { return Peek(0); }
+			[[nodiscard]] Char8 Current() const { return Peek(0); }
 			// The next token in line for the Lexer, this always points 1 position AHEAD of Current()
-			[[nodiscard]] Types::Char8 Next() const { return Peek(1); }
+			[[nodiscard]] Char8 Next() const { return Peek(1); }
 
 		public:
 			// TODO: We need a better method for also collecting diagnostics/errors/warnings when we get the tokens for parse phase
 			// This method will collect all valid tokens and return a list of them, regardless of errors, attempting to emit as many
 			// valid syntax errors as possible, while avoiding cascading errors.
-			[[nodiscard]] static std::vector<Syntax::SyntaxToken> CollectTokens(const Types::Char8* source);
+			[[nodiscard]] static std::vector<Syntax::SyntaxToken> CollectTokens(const Char8* source);
 
 		private:
 			// Checks X characters ahead/behind in the Lexer, offset isn't Types::UInt64 because sometimes we'll use Peek(-1)
 			// to check a character behind us, an unsigned int would error out. 
-			[[nodiscard]] Types::Char8 Peek(const Types::Int64 offset = 0) const; // offset is signed because sometimes we'll need to peek backwards
+			[[nodiscard]] Char8 Peek(const Int64 offset = 0) const; // offset is signed because sometimes we'll need to peek backwards
 
 			// Advances 1 in the source text and returns the character the Lexer is currently sitting on after advancing
-			Types::Char8 Advance();
+			Char8 Advance();
 
 			// TODO: This method name doesn't properly explain what it does
 			// Gets a tokens full text, from _start to _position. If the token was Float32LiteralToken the full text might be "42.42",
 			// an identifier might be "foobar", but without the quotes obviously. This will also get a string/chars raw text. If a literal
 			// string was `"hello world"` it would return `hello world`. This always ensures a tokens true value.
-			[[nodiscard]] const Types::Char8* GetFullTokenText() const;
+			[[nodiscard]] const Char8* GetFullTokenText() const;
 
 			// These smaller incremental scanners prefix with "Scan" because they aren't full blow Lexers, but rather "scan" a select window of text
 

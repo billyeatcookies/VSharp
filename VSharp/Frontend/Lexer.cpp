@@ -382,7 +382,7 @@ namespace VSharp::Frontend
 	const Types::Char8* Lexer::GetFullTokenText() const
 	{
 		const Types::UInt64 length = _position - _start;
-		return Utilities::Substring(Source, _start, length); // Source.substr(_start, length);
+		return Utilities::Substring(Source, _start, length);
 	}
 
 	Types::Char8 Lexer::Peek(const Types::Int64 offset) const
@@ -584,13 +584,13 @@ namespace VSharp::Frontend
 			Advance();
 		}
 
-		const Types::UInt64 length = _position - _start;
-		const Types::Char8* text = Utilities::Substring(Source, _start, length);
+		const UInt32 length = _position - _start;
+		const Char8* text = Utilities::Substring(Source, _start, length);
 		// Will either be a reserved keyword or IdentifierToken for user defined tokens
 		_kind = Syntax::LookupKeyword(text);
 	}
 
-	Types::Char8 Lexer::Advance()
+	Char8 Lexer::Advance()
 	{
 		if (_position == std::strlen(Source))
 		{
