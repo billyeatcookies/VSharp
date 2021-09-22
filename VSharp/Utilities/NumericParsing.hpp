@@ -165,78 +165,12 @@ namespace VSharp::Utilities
 		return TryParseUI16(value);
 	}
 
-	static std::tuple<Float32, bool> TryParseF32(const std::wstring& value)
-	{
-		bool isNeg = false;
-		Float64 result = 0;
-		Float64 decimalMultiplier = 0;
-
-		for (UInt32 i = 0; i < value.length(); i++)
-		{
-			const Char16 ch = value[i];
-
-			if ((ch == 'e') || (ch == 'E'))
-			{
-				if (i == value.length() - 1)
-				{
-					return std::make_tuple(0, false);
-				}
-
-				const std::tuple<Float64, bool> pResult = TryParseI32(value.substr(i + 1));
-				if (!std::get<1>(pResult))
-				{
-					return std::make_tuple(0, false);
-				}
-
-				result *= pow(10, std::get<0>(pResult));
-				break;
-			}
-			if (ch == '.')
-			{
-				if (decimalMultiplier != 0)
-				{
-					return std::make_tuple(0, false);
-				}
-
-				decimalMultiplier = 0.1;
-				continue;
-			}
-			if (decimalMultiplier != 0)
-			{
-				if ((ch >= '0') && (ch <= '9'))
-				{
-					result += (ch - '0') * decimalMultiplier;
-					decimalMultiplier *= 0.1;
-				}
-				else
-				{
-					return std::make_tuple(0, false);
-				}
-			}
-			if ((i == 0) && (ch == '-'))
-			{
-				isNeg = true;
-				continue;
-			}
-			if ((ch >= '0') && (ch <= '9'))
-			{
-				result *= 10;
-				result += ch - '0';
-			}
-			else
-			{
-				return std::make_tuple(0, false);
-			}
-		}
-		return std::make_tuple(isNeg ? static_cast<Float32>(-result) : static_cast<Float32>(result), true);
-	}
-
-	static Float64 ParseFloat64(std::wstring wstr, Char8** ptr = nullptr)
+	static std::tuple<Float64, bool> TryParseF64(std::wstring wstr, Char8** ptr = nullptr)
 	{
 		std::string str = WToString(wstr);
 		if (ptr == static_cast<Char8**>(nullptr))
 		{
-			return atof(str.c_str());
+			return std::make_tuple(atof(str.c_str()), true);
 		}
 
 		Char8* p = str.data();
@@ -263,11 +197,11 @@ namespace VSharp::Utilities
 			 && (p[7] == 'y' || p[7] == 'Y'))
 			{
 				*ptr = p + 8;
-				return atof(str.data());
+				return std::make_tuple(atof(str.c_str()), true);
 			}
 
 			*ptr = p + 3;
-			return atof(str.data());
+			return std::make_tuple(atof(str.c_str()), true);
 		}
 		// NAN or NAN(foo).
 		if ((p[0] == 'n' || p[0] == 'N')
@@ -288,7 +222,7 @@ namespace VSharp::Utilities
 				}
 			}
 			*ptr = p;
-			return atof(str.data());
+			return std::make_tuple(atof(str.c_str()), true);
 		}
 		// digits, with 0 or 1 periods in it. 
 		if (IsDigit(*p) || *p == '.')
@@ -319,21 +253,21 @@ namespace VSharp::Utilities
 					}
 
 					*ptr = p + i;
-					return atof(str.data());
+					return std::make_tuple(atof(str.c_str()), true);
 				}
 			}
 
 			*ptr = p;
-			return atof(str.data());
+			return std::make_tuple(atof(str.c_str()), true);
 		}
 
 		// Didn't find any digits. Doesn't look like a number. 
 		*ptr = str.data();
-		return 0.0;
+		return std::make_tuple(0.0, false);
 	}
 
-	static Float32 ParseFloat32(const std::wstring& input, Char8** ptr = nullptr)
+	static std::tuple<Float32, bool> TryParseF32(const std::wstring& input, Char8** ptr = nullptr)
 	{
-		return static_cast<Float32>(ParseFloat64(input, ptr));
+		return TryParseF64(input, ptr);
 	}
 }
