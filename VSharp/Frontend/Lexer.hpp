@@ -36,6 +36,7 @@ namespace VSharp::Frontend
 		public:
 			// The source text to keep track of during the Lexer phase, this is used for Peeking the current character and validating lexemes
 			const Types::Char8* Source;
+			[[nodiscard]] static constexpr Types::Char8 InvalidChar() { return -1; }
 
 			// The current character the lexer is examining, decimals, numbers, identifiers, etc...
 			[[nodiscard]] Types::Char8 Current() const { return Peek(0); }

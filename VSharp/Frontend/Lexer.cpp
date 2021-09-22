@@ -34,7 +34,7 @@ namespace VSharp::Frontend
 
 		switch (Current())
 		{
-			case -1:
+			case InvalidChar():
 				_kind = Syntax::SyntaxKind::EndOfFileToken;
 				break;
 			case '.':
@@ -381,7 +381,6 @@ namespace VSharp::Frontend
 
 	const Types::Char8* Lexer::GetFullTokenText() const
 	{
-
 		const Types::UInt64 length = _position - _start;
 		return Utilities::Substring(Source, _start, length); // Source.substr(_start, length);
 	}
@@ -393,7 +392,7 @@ namespace VSharp::Frontend
 		const Types::UInt64 index = _position + offset;
 		if (index >= std::strlen(Source))
 		{
-			return -1;
+			return InvalidChar();
 		}
 
 		return Source[index];

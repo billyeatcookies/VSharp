@@ -2,7 +2,6 @@
 #include <string>
 #include "Frontend\Lexer.hpp"
 #include "Utilities\Utils.hpp"
-#include "Utilities\NumericParsing.hpp"
 
 using namespace VSharp;
 void ExecuteCommand(const Types::Char8* command);
@@ -11,19 +10,7 @@ Types::Int32 ExecuteFile(const char* filepath);
 
 int main(int argc, char* argv[]) noexcept
 {
-	const auto result = Utilities::TryParseF32("69.69");
-	const bool ok = std::get<1>(result);
-	if (!ok)
-	{
-		std::cout << "unable to parse" << std::endl;
-	}
-	else
-	{
-		const auto value = std::get<0>(result);
-		std::cout << sizeof(value) << std::endl;
-		std::cout << value << std::endl;
-	}
-	// return ExecuteRepl();
+	return ExecuteRepl();
 	/*if (argc == 0)
 	{
 	}
@@ -36,7 +23,7 @@ int main(int argc, char* argv[]) noexcept
 void ExecuteCommand(const Types::Char8* command)
 {
 	#if defined _WIN32 || defined _WIN64
-	if (command == "#cls")
+	if (std::strcmp(command, "#cls") == 0)
 	{
 		// breakdown:
 		// \033[2J: clears the entire screen (J) from top to bottom (2)
@@ -47,7 +34,7 @@ void ExecuteCommand(const Types::Char8* command)
 	std::cout << "#cls isn't supported on your platform" << std::endl;
 	#endif
 
-	if (command == "#exit")
+	if (std::strcmp(command, "#exit") == 0)
 	{
 		exit(0);
 	}

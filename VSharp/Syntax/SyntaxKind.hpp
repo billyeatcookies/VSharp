@@ -18,88 +18,88 @@ namespace VSharp::Syntax
 		SingleLineCommentToken,
 		MultiLineToken,
 
-		OpenParenToken,
-		CloseParenToken,
-		OpenBraceToken,
-		CloseBraceToken,
-		OpenBracketToken,
-		CloseBracketToken,
+		OpenParenToken, // (
+		CloseParenToken, // )
+		OpenBraceToken, // {
+		CloseBraceToken,  // }
+		OpenBracketToken, // [
+		CloseBracketToken, // ]
 
 		// Unary
 		// these are also unary in single + or - form
-		TildeToken,
-		BangToken,
-		PlusPlusToken,
-		MinusMinusToken,
+		TildeToken, // ~
+		BangToken, // !
+		PlusPlusToken, // ++
+		MinusMinusToken, // --
 
 		// Binary operators
-		PlusToken,
-		MinusToken, // doubles as valid unary operator 
-		AsteriskToken,
-		FSlashToken,
-		PercentToken,
-		CaretToken,
-		QuestionMarkToken,
+		PlusToken, // +
+		MinusToken, // -
+		AsteriskToken, // *
+		FSlashToken, // /
+		PercentToken, // %
+		CaretToken, // ^
+		QuestionMarkToken, // ?
 
 		// Compound assignment
-		CaretEqualsToken,
-		PlusEqualsToken,
-		MinusEqualsToken,
-		AsteriskEqualsToken,
-		FSlashEqualsToken,
-		PercentEqualsToken,
-		PipeEqualsToken,
-		AmpersandEqualsToken,
-		LessLessEqualsToken,
-		GreaterGreaterEqualsToken,
-		TildeEqualsToken,
+		CaretEqualsToken, // ^=
+		PlusEqualsToken, // += 
+		MinusEqualsToken, // -= 
+		AsteriskEqualsToken, // *= 
+		FSlashEqualsToken, // /=
+		PercentEqualsToken, // *=
+		PipeEqualsToken, // |=
+		AmpersandEqualsToken, // &=
+		LessLessEqualsToken, // <<=
+		GreaterGreaterEqualsToken, // >>= 
+		TildeEqualsToken, // ~=
 
-		BangEqualsToken,
-		EqualsToken,
-		EqualsEqualsToken,
-		LessToken,
-		LessEqualsToken,
-		GreaterToken,
-		GreaterEqualsToken,
-		PipeToken,
-		PipePipeToken,
-		AmpersandToken,
-		AmpersandAmpersandToken,
+		BangEqualsToken, // != 
+		EqualsToken, // =
+		EqualsEqualsToken, // ==
+		LessToken, // < 
+		LessEqualsToken, // <=
+		GreaterToken, // >
+		GreaterEqualsToken, // >=
+		PipeToken, // |
+		PipePipeToken, // ||
+		AmpersandToken, // &
+		AmpersandAmpersandToken, // &&
 
 		// Shifts
-		LessLessToken,
-		GreaterGreaterToken,
+		LessLessToken, // << 
+		GreaterGreaterToken, // >>
 
 		// Separators
-		DotToken,
-		CommaToken,
-		ColonToken,
-		SemicolonToken,
+		DotToken, // . 
+		CommaToken, // ,
+		ColonToken, // :
+		SemicolonToken, // ;
 
 		// Compiler reserved keywords
-		TypeOfKeyword,
-		NameOfKeyword,
-		SizeOfKeyword,
-		NewKeyword,
-		ClassKeyword,
-		StructKeyword,
-		StaticKeyword,
-		NilKeyword,
-		TrueKeyword,
-		FalseKeyword,
-		StringKeyword,
-		CharKeyword,
-		BoolKeyword,
-		Int8Keyword,
-		UInt8Keyword,
-		Int16Keyword,
-		UInt16Keyword,
-		Int32Keyword,
-		UInt32Keyword,
-		Int64Keyword,
-		UInt64Keyword,
-		Float32Keyword,
-		Float64Keyword,
+		TypeOfKeyword, // typeof
+		NameOfKeyword, // nameof
+		SizeOfKeyword, // sizeof
+		NewKeyword, // new
+		ClassKeyword, // class
+		StructKeyword, // struct
+		StaticKeyword, // static
+		NilKeyword, // nil
+		TrueKeyword, // true
+		FalseKeyword, // false
+		StringKeyword, // string
+		CharKeyword, // char
+		BoolKeyword, // bool 
+		Int8Keyword, // int8 
+		UInt8Keyword, // uint8 
+		Int16Keyword, // int16
+		UInt16Keyword, // uint16
+		Int32Keyword, // int32 
+		UInt32Keyword, // uint32 
+		Int64Keyword, // int64 
+		UInt64Keyword, // uint64
+		Float32Keyword, // float32
+		Float64Keyword, // float64 
 
 		// User defined identifiers, such as:
 		// "class Foo {}", or "int8 bar;", this would store just "Foo" or "bar",
