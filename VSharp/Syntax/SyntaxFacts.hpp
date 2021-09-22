@@ -175,25 +175,12 @@ namespace VSharp::Syntax
 	// This should be self explanatory
 	[[nodiscard]] static SyntaxKind LookupKeyword(const std::wstring& input)
 	{
-		// I've been having issues getting (Keywords.find(input == Keywords.end()) for looking up
-		// keys in the map to work, and I'm not sure why it refuses to work reliably, so I'm just
-		// going to manually loop until someone finds a fix :/
-		// HOWEVER, LookupMemberName seems to work perfectly fine for this method, and I don't know why.
-
-		// Possible reasons for lookup failing (at least what I thought of):
-		// 1. mismatch length
-		// 2. invisible whitespace
-		// 3. encoding issues
-		// but none of these SHOULD be the cause, since I've attempted printing out these values
-		for (const auto& [text, kind] : Keywords)
+		if (Keywords.find(input) == Keywords.end())
 		{
-			if (text == input)
-			{
-				return kind;
-			}
+			return SyntaxKind::IdentifierToken;
 		}
 
-		return SyntaxKind::IdentifierToken;
+		return Keywords.at(input);
 	}
 
 	// Attempt to locate locate a member from SyntaxKind, and return it's human readable name,
@@ -207,6 +194,6 @@ namespace VSharp::Syntax
 			return L"InvalidTokenKind";
 		}
 
-		return MemberNames[kind];
+		return MemberNames.at(kind);
 	}
 }
