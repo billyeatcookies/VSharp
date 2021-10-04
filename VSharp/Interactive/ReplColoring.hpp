@@ -2,12 +2,31 @@
 #include <iostream>
 #include <string>
 #include "..\Utilities\Types.hpp"
-#include "ReplColors.hpp"
 #include <Windows.h> 
 
 namespace VSharp::Interactive
 {
 	using namespace Types;
+
+	enum class Colors : UInt8
+	{
+		Black = 0,
+		DarkBlue = 1,
+		DarkGreen = 2,
+		LightBlue = 3,
+		DarkRed = 4,
+		Magenta = 5,
+		Orange = 6,
+		LightGray = 7,
+		Gray = 8,
+		Blue = 9,
+		Green = 10,
+		Cyan = 11,
+		Red = 12,
+		Pink = 13,
+		Yellow = 14,
+		White = 15
+	};
 
 	[[nodiscard]] static std::string GetTextColorCode(const Colors textColor)
 	{
@@ -29,8 +48,8 @@ namespace VSharp::Interactive
 	        case Colors::Pink:      return "95"; // color_pink      13
 	        case Colors::Yellow:    return "93"; // color_yellow    14
 	        case Colors::White:     return "97"; // color_white     15
-	        default:                return "37";
 		}
+		return "37";
 	}
 
 	[[nodiscard]] static std::string GetBackgroundColorCode(const Colors backgroundColor)
@@ -53,8 +72,8 @@ namespace VSharp::Interactive
 			case Colors::Pink:		return "105"; // color_pink      13
 			case Colors::Yellow:	return "103"; // color_yellow    14
 			case Colors::White:		return "107"; // color_white     15
-			default:				return "40";
 		}
+		return "40";
 	}
 
 	[[nodiscard]] static std::string GetColor(const Colors textColor)
@@ -69,18 +88,19 @@ namespace VSharp::Interactive
 
 	static void WriteColor(const Colors textColor)
 	{
-		static const HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+		static HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
 		SetConsoleTextAttribute(handle, static_cast<Int8>(textColor));
 	}
+
 	static void WriteColor(const Colors textColor, const Colors bgColor)
 	{
-		static const HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(handle, static_cast<Int8>(bgColor) << 4 | static_cast<Int8>(textColor));
+		static HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTextAttribute(handle, static_cast<UInt8>(static_cast<UInt8>(bgColor) << static_cast<UInt8>(4) | static_cast<UInt8>(textColor)));
 	}
 
 	static void ResetColor()
 	{
-		static const HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+		static HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
 		SetConsoleTextAttribute(handle, 7);
 	}
 
@@ -97,14 +117,14 @@ namespace VSharp::Interactive
 	static void WriteLineColor(const std::string& input, const Colors textColor)
 	{
 		WriteColor(textColor);
-		std::cout << input << std::endl;
+		WriteLine(input);
 		ResetColor();
 	}
 
 	static void WriteColor(const std::string& input, const Colors textColor)
 	{
 		WriteColor(textColor);
-		std::cout << input;
+		Write(input);
 		ResetColor();
 	}
 

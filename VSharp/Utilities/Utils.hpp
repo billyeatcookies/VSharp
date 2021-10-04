@@ -9,16 +9,16 @@ namespace VSharp::Utilities
 {
 	using namespace Types;
 
-	[[nodiscard]] static bool FileExists(const std::wstring& filepath)
+	[[nodiscard]] static bool FileExists(const std::string& filepath)
 	{
 		return std::filesystem::exists(filepath);
 	}
 
-	[[nodiscard]] static std::wstring LoadFile(const std::wstring& filepath)
+	[[nodiscard]] static std::wstring LoadFile(const std::string& filepath)
 	{
 		if (!FileExists(filepath))
 		{
-			std::wcerr << "error: unable to locate file: " << filepath << std::endl;
+			std::cerr << "error: unable to locate file: " << filepath << std::endl;
 			return L"";
 		}
 

@@ -1,7 +1,6 @@
 #pragma once
 #include <unordered_map>
 
-#include "..\Utilities\Types.hpp"
 #include "SyntaxKind.hpp"
 #include "SyntaxData.hpp"
 

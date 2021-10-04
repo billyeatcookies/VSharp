@@ -54,30 +54,30 @@ namespace VSharp::Syntax
         SystemDateTime = 33,*/
 	};
 
-    static std::vector<std::wstring> EmittedNames
+    static std::vector<std::u16string> EmittedNames
     {
         // Ensure SpecialType enum is kept in sync with this vector
-    	L"", // SpecialType.None
-        L"System.Object",
-        L"System.Enum",
-		L"System.ValueType",
-        L"System.Void",
-        L"System.Boolean",
-        L"System.Char",
-        L"System.SByte",
-        L"System.Byte",
-        L"System.Int16",
-        L"System.UInt16",
-        L"System.Int32",
-        L"System.UInt32",
-        L"System.Int64",
-        L"System.UInt64",
-        L"System.Decimal",
-        L"System.Single",
-        L"System.Double",
-        L"System.String",
-        L"System.IntPtr",
-        L"System.UIntPtr",
-        L"System.Array",
+    	u"", // SpecialType.None
+        u"System.Object",
+        u"System.Enum",
+		u"System.ValueType",
+        u"System.Void",
+        u"System.Boolean",
+        u"System.Char",
+        u"System.SByte",
+        u"System.Byte",
+        u"System.Int16",
+        u"System.UInt16",
+        u"System.Int32",
+        u"System.UInt32",
+        u"System.Int64",
+        u"System.UInt64",
+        u"System.Decimal",
+        u"System.Single",
+        u"System.Double",
+        u"System.String",
+        u"System.IntPtr",
+        u"System.UIntPtr",
+        u"System.Array",
     };
 }

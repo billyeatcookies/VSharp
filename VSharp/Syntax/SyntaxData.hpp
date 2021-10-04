@@ -84,6 +84,7 @@ namespace VSharp::Syntax
 		{SyntaxKind::TrueKeyword, L"TrueKeyword"},
 		{SyntaxKind::FalseKeyword, L"FalseKeyword"},
 
+		{SyntaxKind::ObjectKeyword, L"ObjectKeyword"},
 		{SyntaxKind::StringKeyword, L"StringKeyword"},
 		{SyntaxKind::CharKeyword, L"CharKeyword"},
 		{SyntaxKind::BoolKeyword, L"BoolKeyword"},
@@ -139,17 +140,15 @@ namespace VSharp::Syntax
 		{L"float32", SyntaxKind::Float32Keyword},
 		{L"float64", SyntaxKind::Float64Keyword},
 		 
+		{L"object", SyntaxKind::ObjectKeyword},
 		{L"string", SyntaxKind::StringKeyword},
 		{L"char", SyntaxKind::CharKeyword},
 		{L"bool", SyntaxKind::BoolKeyword},
 		{L"true", SyntaxKind::TrueKeyword},
-		 
 		{L"false", SyntaxKind::FalseKeyword},
 		 
 		{L"nil", SyntaxKind::NilKeyword},
-		 
 		{L"class", SyntaxKind::ClassKeyword},
 		{L"struct", SyntaxKind::StructKeyword},
 	};
-
 }

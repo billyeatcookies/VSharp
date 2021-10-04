@@ -89,11 +89,11 @@ namespace VSharp::Syntax
 		StructKeyword, // struct
 		StaticKeyword, // static
 
-
 		NilKeyword, // nil
 		TrueKeyword, // true
 		FalseKeyword, // false
 
+		ObjectKeyword,
 		StringKeyword, // string
 		CharKeyword, // char
 		BoolKeyword, // bool 

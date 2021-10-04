@@ -1,9 +1,7 @@
 #include "Interactive\Repl.hpp"
-
 using namespace VSharp::Interactive;
 
-int main() noexcept
+Int32 main() noexcept
 {
-	Repl repl = Repl(true);
-	return repl.Execute();
+ 	return Repl::Execute(true);
 }

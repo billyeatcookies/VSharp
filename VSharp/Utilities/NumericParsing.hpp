@@ -14,6 +14,7 @@ namespace VSharp::Utilities
 		{
 			return static_cast<Char8>(c);
 		});
+		
 		return str;
 	}
 

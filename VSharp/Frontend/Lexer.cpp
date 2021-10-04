@@ -3,9 +3,11 @@
 #include <cassert>
 
 #include "Lexer.hpp"
-#include "..\Utilities\Utils.hpp"
-#include "..\Syntax\SyntaxFacts.hpp"
+
 #include "..\Syntax\SyntaxKind.hpp"
+#include "..\Syntax\SyntaxFacts.hpp"
+
+#include "..\Utilities\Utils.hpp"
 #include "..\Utilities\NumericParsing.hpp"
 
 // TODO: Once Lexer is completed, handle diagnostics/errors/warnings to catch static analysis issues.
@@ -154,7 +156,7 @@ namespace VSharp::Frontend
 						_kind = Syntax::SyntaxKind::FSlashEqualsToken;
 						Advance();
 						break;
-					// TODO: Comments
+					// TODO: Support comments 
 					default:
 						_kind = Syntax::SyntaxKind::FSlashToken;
 						break;
@@ -306,70 +308,29 @@ namespace VSharp::Frontend
 			case '\t':
 				ScanWhiteSpaces();
 				break;
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
+			case '0': case '1':
+			case '2': case '3':
+			case '4': case '5':
+			case '6': case '7':
+			case '8': case '9':
 				ScanNumericLiteral();
 				break;
-			case 'a':
-			case 'b':
-			case 'c':
-			case 'd':
-			case 'e':
-			case 'f':
-			case 'g':
-			case 'h':
-			case 'i':
-			case 'j':
-			case 'k':
-			case 'l':
-			case 'm':
-			case 'n':
-			case 'o':
-			case 'p':
-			case 'q':
-			case 'r':
-			case 's':
-			case 't':
-			case 'u':
-			case 'v':
-			case 'w':
-			case 'x':
-			case 'y':
-			case 'z':
-			case 'A':
-			case 'B':
-			case 'C':
-			case 'D':
-			case 'E':
-			case 'F':
-			case 'G':
-			case 'H':
-			case 'I':
-			case 'J':
-			case 'K':
-			case 'L':
-			case 'M':
-			case 'N':
-			case 'O':
-			case 'P':
-			case 'Q':
-			case 'R':
-			case 'S':
-			case 'T':
-			case 'U':
-			case 'V':
-			case 'W':
-			case 'X':
-			case 'Y':
-			case 'Z':
+			// NOTE: DO NOT move this into the default case, it's faster to handle
+			// all cases that a numeric literal is most likely to be, then take care
+			// of the other unicode values with an if statement in the default case
+			case 'a': case 'b': case 'c': case 'd':
+			case 'e': case 'f': case 'g': case 'h':
+			case 'i': case 'j': case 'k': case 'l':
+			case 'm': case 'n': case 'o': case 'p':
+			case 'q': case 'r': case 's': case 't':
+			case 'u': case 'v': case 'w': case 'x':
+			case 'y': case 'z': case 'A': case 'B':
+			case 'C': case 'D': case 'E': case 'F':
+			case 'G': case 'H': case 'I': case 'J':
+			case 'K': case 'L': case 'M': case 'N':
+			case 'O': case 'P': case 'Q': case 'R':
+			case 'S': case 'T': case 'U': case 'V':
+			case 'W': case 'X': case 'Y': case 'Z':
 			case '_':
 				ScanIdentifierOrKeyword();
 				break;
@@ -415,10 +376,12 @@ namespace VSharp::Frontend
 
 	void Lexer::ScanNumericLiteral()
 	{
-		// TODO(1): Fully support floats, and assign correct types
-		// TODO(2): Fully support binary, hex, and literal suffixes 
-		// TODO(2): such as 'UI64' so people can use "12UI64" to
-		// TODO(2): fully express intent when assigning with "var"
+		// NOTE: I have no clue of the limitations placed on binary and hexadecimal 
+		// literals, so... this one will be on the back-burner for a while
+		// TODO(1): Fully support binary and hex
+		// TODO(2): I'm not 100% certain I want to allow both lowercase
+		// TODO(2): and uppercase literal suffixes, the goal is to remove
+		// TODO(2): as much ambiguity as possible.
 
 		bool hasSeparator = false;
 		bool hasDecimal = false;
@@ -461,7 +424,7 @@ namespace VSharp::Frontend
 		}
 
 		// Floats are parsed separately instead of cast due to floating point precision.
-		if (hasDecimal || Current() == 'F' || Current() == 'f')
+		if (hasDecimal && (Current() == 'F' || Current() == 'f'))
 		{
 			// Validate float
 			if ((Current() == 'F' && Next() == '3') || 
@@ -594,10 +557,14 @@ namespace VSharp::Frontend
 					_kind = Syntax::SyntaxKind::Int64LiteralToken;
 				}
 			}
-			else
-			{
-				ValidateIntegerLiteral(text);
-			}
+		}
+		else if (hasDecimal)
+		{
+			ValidateDecimalLiteral(text);
+		}
+		else
+		{
+			ValidateIntegerLiteral(text);
 		}
 	}
 
@@ -654,7 +621,6 @@ namespace VSharp::Frontend
 			_value = value;
 		}
 	}
-
 
 	// TODO: Support escapes
 	void Lexer::ScanStringOrCharLiteral()
@@ -728,7 +694,6 @@ namespace VSharp::Frontend
 		}
 
 		const UInt32 length = _position - _start;
-		//const Char8* text = Utilities::Substring(Source, _start, length);
 		const std::wstring text = Source.substr(_start, length);
 		// Will either be a reserved keyword or IdentifierToken for user defined tokens
 		_kind = Syntax::LookupKeyword(text);
