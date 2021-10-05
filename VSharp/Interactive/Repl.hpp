@@ -81,7 +81,7 @@ namespace VSharp::Interactive
 						}
 
 						for (const std::vector<Syntax::SyntaxToken> tokens = Frontend::Lexer::CollectTokens(inputBuffer);
-							const Syntax::SyntaxToken & token : tokens)
+							 const Syntax::SyntaxToken & token : tokens)
 						{
 							std::wcout << LookupMemberName(token.Kind) << std::endl;
 						}

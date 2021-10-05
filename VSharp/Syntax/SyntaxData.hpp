@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_map>
+
 #include "SyntaxKind.hpp"
-#include "..\Utilities\Types.hpp"
 
 namespace VSharp::Syntax
 {
@@ -75,6 +75,9 @@ namespace VSharp::Syntax
 		{SyntaxKind::SizeOfKeyword, L"SizeOfKeyword"},
 		{SyntaxKind::NewKeyword, L"NewKeyword"},
 
+		{SyntaxKind::PublicKeyword, L"PublicKeyword"},
+		{SyntaxKind::PrivateKeyword, L"PrivateKeyword"},
+
 		{SyntaxKind::ClassKeyword, L"ClassKeyword"},
 		{SyntaxKind::StructKeyword, L"StructKeyword"},
 		{SyntaxKind::StaticKeyword, L"StaticKeyword"},
@@ -127,6 +130,11 @@ namespace VSharp::Syntax
 		{L"nameof", SyntaxKind::NameOfKeyword},
 		{L"sizeof", SyntaxKind::SizeOfKeyword},
 		{L"new", SyntaxKind::NewKeyword},
+
+		{L"public", SyntaxKind::PublicKeyword},
+		{L"private", SyntaxKind::PrivateKeyword},
+
+
 
 		{L"int8", SyntaxKind::Int8Keyword},
 		{L"uint8", SyntaxKind::UInt8Keyword},

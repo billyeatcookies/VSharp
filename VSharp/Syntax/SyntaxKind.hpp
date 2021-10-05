@@ -85,6 +85,9 @@ namespace VSharp::Syntax
 		SizeOfKeyword, // sizeof
 		NewKeyword, // new
 
+		PublicKeyword, // public
+		PrivateKeyword, // private
+
 		ClassKeyword, // class
 		StructKeyword, // struct
 		StaticKeyword, // static
