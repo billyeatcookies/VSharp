@@ -2,6 +2,7 @@
 #include <tuple>
 #include <string>
 #include "Types.hpp"
+#include "Utils.hpp"
 
 namespace VSharp::Utilities
 {
@@ -148,127 +149,139 @@ namespace VSharp::Utilities
 
 	static std::tuple<Int16, bool> TryParseI16(const std::wstring& value)
 	{
-		return TryParseI32(value);
+		const std::tuple result = TryParseUI32(value);
+		return std::make_tuple(static_cast<Int16>(std::get<0>(result)), std::get<1>(result));
 	}
 
 	static std::tuple<UInt16, bool> TryParseUI16(const std::wstring& value)
 	{
-		return TryParseUI32(value);
+		const std::tuple result = TryParseUI32(value);
+		return std::make_tuple(static_cast<UInt16>(std::get<0>(result)), std::get<1>(result));
 	}
 
 	static std::tuple<Int8, bool> TryParseI8(const std::wstring& value)
 	{
-		return TryParseI16(value);
+		const std::tuple result = TryParseI32(value);
+		return std::make_tuple(static_cast<Int8>(std::get<0>(result)), std::get<1>(result));
 	}
 
 	static std::tuple<UInt8, bool> TryParseUI8(const std::wstring& value)
 	{
-		return TryParseUI16(value);
+		const std::tuple result = TryParseI32(value);
+		return std::make_tuple(static_cast<UInt8>(std::get<0>(result)), std::get<1>(result));
 	}
 
-	static std::tuple<Float64, bool> TryParseF64(std::wstring wstr, Char8** ptr = nullptr)
+	static std::tuple<Float64, bool> TryParseF64(const std::wstring& wstr, Char8** ptr = nullptr)
 	{
-		std::string str = WToString(wstr);
-		if (ptr == static_cast<Char8**>(nullptr))
+		try
 		{
-			return std::make_tuple(atof(str.c_str()), true);
-		}
-
-		Char8* p = str.data();
-
-		while (IsWhiteSpace(*p))
-		{
-			++p;
-		}
-
-		if (*p == '+' || *p == '-')
-		{
-			++p;
-		}
-
-		// INF or INFINITY. 
-		if ((p[0] == 'i' || p[0] == 'I')
-		 && (p[1] == 'n' || p[1] == 'N')
-		 && (p[2] == 'f' || p[2] == 'F'))
-		{
-			if ((p[3] == 'i' || p[3] == 'I')
-			 && (p[4] == 'n' || p[4] == 'N')
-			 && (p[5] == 'i' || p[5] == 'I')
-			 && (p[6] == 't' || p[6] == 'T')
-			 && (p[7] == 'y' || p[7] == 'Y'))
+			std::string str = WToString(wstr);
+			if (ptr == static_cast<Char8**>(nullptr))
 			{
-				*ptr = p + 8;
-				return std::make_tuple(atof(str.c_str()), true);
+				return std::make_tuple(std::strtod(str.c_str(), nullptr), true);
 			}
 
-			*ptr = p + 3;
-			return std::make_tuple(atof(str.c_str()), true);
-		}
-		// NAN or NAN(foo).
-		if ((p[0] == 'n' || p[0] == 'N')
-		 && (p[1] == 'a' || p[1] == 'A')
-		 && (p[2] == 'n' || p[2] == 'N'))
-		{
-			p += 3;
-			if (*p == '(')
+			Char8* p = str.data();
+
+			while (IsWhiteSpace(*p))
 			{
-				++p;
-				while (*p != '\0' && *p != ')')
-				{
-					++p;
-				}
-				if (*p == ')')
-				{
-					++p;
-				}
-			}
-			*ptr = p;
-			return std::make_tuple(atof(str.c_str()), true);
-		}
-		// digits, with 0 or 1 periods in it. 
-		if (IsDigit(*p) || *p == '.')
-		{
-			bool hasDecimal = false;
-			while (IsDigit(*p) || (!hasDecimal && *p == '.'))
-			{
-				if (*p == '.')
-				{
-					hasDecimal = true;
-				}
 				++p;
 			}
 
-			// Exponent.  
-			if (*p == 'e' || *p == 'E')
+			if (*p == '+' || *p == '-')
 			{
-				Int32 i = 1;
-				if (p[i] == '+' || p[i] == '-')
+				++p;
+			}
+
+			// INF or INFINITY. 
+			if ((p[0] == 'i' || p[0] == 'I')
+			 && (p[1] == 'n' || p[1] == 'N')
+			 && (p[2] == 'f' || p[2] == 'F'))
+			{
+				if ((p[3] == 'i' || p[3] == 'I')
+				 && (p[4] == 'n' || p[4] == 'N')
+				 && (p[5] == 'i' || p[5] == 'I')
+				 && (p[6] == 't' || p[6] == 'T')
+				 && (p[7] == 'y' || p[7] == 'Y'))
 				{
-					++i;
+					*ptr = p + 8;
+					return std::make_tuple(std::strtod(str.c_str(), nullptr), true);
 				}
-				if (IsDigit(p[i]))
+
+				*ptr = p + 3;
+				return std::make_tuple(std::strtod(str.c_str(), nullptr), true);
+			}
+			// NAN or NAN(foo).
+			if ((p[0] == 'n' || p[0] == 'N')
+			 && (p[1] == 'a' || p[1] == 'A')
+			 && (p[2] == 'n' || p[2] == 'N'))
+			{
+				p += 3;
+				if (*p == '(')
 				{
-					while (IsDigit(p[i]))
+					++p;
+					while (*p != '\0' && *p != ')')
+					{
+						++p;
+					}
+					if (*p == ')')
+					{
+						++p;
+					}
+				}
+				*ptr = p;
+				return std::make_tuple(std::strtod(str.c_str(), nullptr), true);
+			}
+			// digits, with 0 or 1 periods in it. 
+			if (IsDigit(*p) || *p == '.')
+			{
+				bool hasDecimal = false;
+				while (IsDigit(*p) || (!hasDecimal && *p == '.'))
+				{
+					if (*p == '.')
+					{
+						hasDecimal = true;
+					}
+					++p;
+				}
+
+				// Exponent.  
+				if (*p == 'e' || *p == 'E')
+				{
+					Int32 i = 1;
+					if (p[i] == '+' || p[i] == '-')
 					{
 						++i;
 					}
+					if (IsDigit(p[i]))
+					{
+						while (IsDigit(p[i]))
+						{
+							++i;
+						}
 
-					*ptr = p + i;
-					return std::make_tuple(atof(str.c_str()), true);
+						*ptr = p + i;
+						return std::make_tuple(std::strtod(str.c_str(), nullptr), true);
+					}
 				}
+
+				*ptr = p;
+				return std::make_tuple(std::strtod(str.c_str(), nullptr), true);
 			}
 
-			*ptr = p;
-			return std::make_tuple(atof(str.c_str()), true);
+			// Didn't find any digits. Doesn't look like a number. 
+			*ptr = str.data();
+			return std::make_tuple(0.0, false);
 		}
-
-		// Didn't find any digits. Doesn't look like a number. 
-		*ptr = str.data();
-		return std::make_tuple(0.0, false);
+		catch (...)
+		{
+			return std::make_tuple(0.0, false);
+		}
 	}
 
 	static std::tuple<Float32, bool> TryParseF32(const std::wstring& input, Char8** ptr = nullptr)
 	{
-		return TryParseF64(input, ptr);
+		const std::tuple result = TryParseF64(input, ptr);
+		return std::make_tuple(static_cast<Float32>(std::get<0>(result)), std::get<1>(result));
 	}
 }

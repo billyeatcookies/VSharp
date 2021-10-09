@@ -68,7 +68,7 @@ namespace VSharp::Utilities
 			|| ch == '\v'
 			|| ch == '\f'
 			|| ch == '\u00A0'
-			|| ch == '\uFEFF'
+			// || ch == '\uFEFF'
 			|| ch == '\u001A';
 			// TODO: support more unicode space separators
 	}
@@ -76,8 +76,8 @@ namespace VSharp::Utilities
 	[[nodiscard]] static bool IsNewLine(const Char16& ch)
 	{
 		return ch == '\r'
-			|| ch == '\n'
-			|| ch == '\u0085';
+			|| ch == '\n';
+			// || ch == '\u0085';
 	}
 
 	[[nodiscard]] static bool IsNonAsciiQuotationMark(const Char16& ch)
