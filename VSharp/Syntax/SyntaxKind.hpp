@@ -91,6 +91,10 @@ namespace VSharp::Syntax
 		ClassKeyword, // class
 		StructKeyword, // struct
 		StaticKeyword, // static
+		ImmutableKeyword,
+		MutableKeyword,
+		ThisKeyword,
+		ValueKeyword,
 
 		NilKeyword, // nil
 		TrueKeyword, // true

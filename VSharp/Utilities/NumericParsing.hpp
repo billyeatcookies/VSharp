@@ -284,4 +284,22 @@ namespace VSharp::Utilities
 		const std::tuple result = TryParseF64(input, ptr);
 		return std::make_tuple(static_cast<Float32>(std::get<0>(result)), std::get<1>(result));
 	}
+
+
+	static std::tuple<UInt64, bool> TryParseBinaryUInt64(const std::wstring& text)
+	{
+		UInt64 value = 0;
+		for (const Char16& chr : text)
+		{
+			if ((value & 0x8000000000000000) != 0)
+			{
+				return std::make_tuple(0, false);
+			}
+
+			const UInt64 bit = BinaryValue(chr);
+			value = (value << 1) | bit;
+		}
+
+		return std::make_tuple(value, false);
+	}
 }

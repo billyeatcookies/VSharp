@@ -1,0 +1,3 @@
+[submodule "third-party/System"]
+	path = third-party/System
+	url = https://github.com/WaifuShork/System.git

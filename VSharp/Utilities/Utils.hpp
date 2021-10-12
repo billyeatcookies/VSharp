@@ -49,7 +49,7 @@ namespace VSharp::Utilities
 		return (ch >= '0' && ch <= '9') ? ch - '0' : (ch & 0xdf) - 'A' + 10;
 	}
 
-	[[nodiscard]] static Int32 BinaryDigit(const Char16& ch)
+	[[nodiscard]] static Int32 BinaryValue(const Char16& ch)
 	{
 		assert(IsBinaryDigit(ch));
 		return ch - '0';

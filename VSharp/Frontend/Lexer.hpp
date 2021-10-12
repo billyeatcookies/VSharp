@@ -66,7 +66,7 @@ namespace VSharp::Frontend
 			// an identifier might be "foobar", but without the quotes obviously. This will also get a string/chars raw text. If a literal
 			// string was `"hello world"` it would return `hello world`. This always ensures a tokens true value.
 			[[nodiscard]] std::wstring GetFullTokenText() const;
-
+			
 			// These smaller incremental scanners prefix with "Scan" because they aren't full blow Lexers, but rather "scan" a select window of text
 
 			// This will scan a char or string literal, being something like 'o' or "hello world". This also takes character/string literal escapes

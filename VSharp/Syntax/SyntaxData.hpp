@@ -77,11 +77,13 @@ namespace VSharp::Syntax
 
 		{SyntaxKind::PublicKeyword, L"PublicKeyword"},
 		{SyntaxKind::PrivateKeyword, L"PrivateKeyword"},
-
 		{SyntaxKind::ClassKeyword, L"ClassKeyword"},
 		{SyntaxKind::StructKeyword, L"StructKeyword"},
 		{SyntaxKind::StaticKeyword, L"StaticKeyword"},
-
+		{SyntaxKind::ImmutableKeyword, L"ImmutableKeyword"},
+		{SyntaxKind::MutableKeyword, L"MutableKeyword"},
+		{SyntaxKind::ThisKeyword, L"ThisKeyword"},
+		{SyntaxKind::ValueKeyword, L"ValueKeyword"},
 		{SyntaxKind::NilKeyword, L"NilKeyword"},
 
 		{SyntaxKind::TrueKeyword, L"TrueKeyword"},
@@ -133,8 +135,13 @@ namespace VSharp::Syntax
 
 		{L"public", SyntaxKind::PublicKeyword},
 		{L"private", SyntaxKind::PrivateKeyword},
-
-
+		{L"immutable", SyntaxKind::ImmutableKeyword},
+		{L"mutable", SyntaxKind::MutableKeyword},
+		{L"this", SyntaxKind::ThisKeyword},
+		{L"nil", SyntaxKind::NilKeyword},
+		{L"class", SyntaxKind::ClassKeyword},
+		{L"struct", SyntaxKind::StructKeyword},
+		{L"value", SyntaxKind::ValueKeyword},
 
 		{L"int8", SyntaxKind::Int8Keyword},
 		{L"uint8", SyntaxKind::UInt8Keyword},
@@ -154,9 +161,5 @@ namespace VSharp::Syntax
 		{L"bool", SyntaxKind::BoolKeyword},
 		{L"true", SyntaxKind::TrueKeyword},
 		{L"false", SyntaxKind::FalseKeyword},
-		 
-		{L"nil", SyntaxKind::NilKeyword},
-		{L"class", SyntaxKind::ClassKeyword},
-		{L"struct", SyntaxKind::StructKeyword},
 	};
 }
