@@ -1,5 +1,3 @@
-#include <System\Console.hpp>
-
 #include "System\Integer.hpp"
 #include "Interactive\Repl.hpp"
 
