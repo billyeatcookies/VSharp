@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "..\Utilities\Types.hpp"
+#include "System\Char.hpp"
 
 // TODO: handling metadata
 
@@ -13,7 +13,7 @@ namespace VSharp::Syntax
     // Some of the naming conventions have been changed to match VSharps style
     // Anything commented out isn't being emitted currently
 
-    enum class SpecialType : Types::Char16
+    enum class SpecialType : System::Char16
     {
         None = 0,
         SystemObject = 1,

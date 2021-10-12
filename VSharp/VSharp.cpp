@@ -1,10 +1,9 @@
-#include "Interactive\Repl.hpp"
-#include <chrono>
+#include <System\Console.hpp>
 
-using namespace VSharp::Interactive;
+#include "System\Integer.hpp"
 
 // Main should always be kept as small as possible for simplistic sake
-Int32 main() noexcept
+System::Int32 main() noexcept
 {
-	return Repl::Execute(true);
+	System::Console::WriteLine("Hello world!");
 }

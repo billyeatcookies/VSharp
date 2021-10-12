@@ -2,25 +2,22 @@
 #include <any>
 
 #include "SyntaxFacts.hpp"
-
-#include "..\Utilities\Types.hpp"
+#include "System\Integer.hpp"
 
 namespace VSharp::Syntax
 {
-	using namespace Types;
-
 	class SyntaxToken
 	{
 		public:
-			SyntaxToken(const SyntaxKind kind, const UInt64 position, std::wstring text, std::any value) :
+			SyntaxToken(const SyntaxKind kind, const System::UInt64 position, std::u16string text, std::any value) :
 				Kind(kind), Position(position), Text(std::move(text)), Value(std::move(value)) {}
 			
 			SyntaxToken() : Kind(SyntaxKind::BadToken), Position(0), Text(), Value(nullptr) {}
 
 		public:
 			SyntaxKind Kind;
-			UInt64 Position;
-			std::wstring Text;
+			System::UInt64 Position;
+			std::u16string Text;
 			std::any Value;
 	};
 }
